@@ -20,7 +20,7 @@ struct Dataset {
 @Observable
 class PerceptronModel {
     var selectedDataset = "AND Gate"
-    var csvText: String = "Input1,Input2,Output\n0,0,-1\n0,1,-1\n1,0,-1\n1,1,1"
+    var csvText: String = "Input1,Input2,Output\n0,0,False\n0,1,False\n1,0,False\n1,1,True"
     var dataPoints: [DataPoint] = []
     var w1: Double = 1.0
     var w2: Double = 1.0
@@ -35,27 +35,31 @@ class PerceptronModel {
     var yAxisLabel: String = "X2"
     var outputLabel: String = "Output"
     
+    // Actual labels from CSV data (preserving original casing)
+    var negativeDisplayLabel: String = "FALSE"
+    var positiveDisplayLabel: String = "TRUE"
+    
     let datasets: [Dataset] = [
         Dataset(
             name: "AND Gate",
-            csvData: "Input1,Input2,Output\n0,0,-1\n0,1,-1\n1,0,-1\n1,1,1",
+            csvData: "Input1,Input2,Output\n0,0,False\n0,1,False\n1,0,False\n1,1,True",
             description: "Classic AND gate logic"
         ),
         Dataset(
             name: "OR Gate",
-            csvData: "Input1,Input2,Output\n0,0,-1\n0,1,1\n1,0,1\n1,1,1",
+            csvData: "Input1,Input2,Output\n0,0,False\n0,1,True\n1,0,True\n1,1,True",
             description: "Classic OR gate logic"
         ),
         Dataset(
             name: "Iris Flowers",
-            csvData: "Sepal Length,Sepal Width,Species\n5.1,3.5,-1\n4.9,3.0,-1\n4.7,3.2,-1\n4.6,3.1,-1\n5.0,3.6,-1\n5.4,3.9,-1\n4.6,3.4,-1\n5.0,3.4,-1\n4.4,2.9,-1\n4.9,3.1,-1\n7.0,3.2,1\n6.4,3.2,1\n6.9,3.1,1\n5.5,2.3,1\n6.5,2.8,1\n5.7,2.8,1\n6.3,3.3,1\n4.9,2.4,1\n6.6,2.9,1\n5.2,2.7,1",
+            csvData: "Sepal Length,Sepal Width,Species\n5.1,3.5,Setosa\n4.9,3.0,Setosa\n4.7,3.2,Setosa\n4.6,3.1,Setosa\n5.0,3.6,Setosa\n5.4,3.9,Setosa\n4.6,3.4,Setosa\n5.0,3.4,Setosa\n4.4,2.9,Setosa\n4.9,3.1,Setosa\n7.0,3.2,Versicolor\n6.4,3.2,Versicolor\n6.9,3.1,Versicolor\n5.5,2.3,Versicolor\n6.5,2.8,Versicolor\n5.7,2.8,Versicolor\n6.3,3.3,Versicolor\n4.9,2.4,Versicolor\n6.6,2.9,Versicolor\n5.2,2.7,Versicolor",
             description: "Setosa vs Versicolor iris flowers (sepal dimensions)",
             negativeLabel: "Setosa",
             positiveLabel: "Versicolor"
         ),
         Dataset(
             name: "UIKit vs SwiftUI",
-            csvData: "Dev Time (hours),Bug Count,Framework\n8.5,2,-1\n12.0,1,-1\n15.2,3,-1\n18.7,2,-1\n22.1,4,-1\n25.3,3,-1\n28.9,5,-1\n32.4,4,-1\n35.8,6,-1\n40.2,5,-1\n3.2,8,1\n4.1,12,1\n2.8,15,1\n5.3,18,1\n3.9,22,1\n4.7,25,1\n2.4,28,1\n5.8,32,1\n3.6,35,1\n4.2,38,1",
+            csvData: "Dev Time (hours),Bug Count,Framework\n8.5,2,UIKit\n12.0,1,UIKit\n15.2,3,UIKit\n18.7,2,UIKit\n22.1,4,UIKit\n25.3,3,UIKit\n28.9,5,UIKit\n32.4,4,UIKit\n35.8,6,UIKit\n40.2,5,UIKit\n3.2,8,SwiftUI\n4.1,12,SwiftUI\n2.8,15,SwiftUI\n5.3,18,SwiftUI\n3.9,22,SwiftUI\n4.7,25,SwiftUI\n2.4,28,SwiftUI\n5.8,32,SwiftUI\n3.6,35,SwiftUI\n4.2,38,SwiftUI",
             description: "Development time (hours) vs bugs: UIKit (slower, fewer bugs) vs SwiftUI (faster, more bugs)",
             negativeLabel: "UIKit",
             positiveLabel: "SwiftUI"
@@ -93,19 +97,69 @@ class PerceptronModel {
             startIndex = 0
         }
         
-        // Parse data lines
+        // First pass: collect all unique labels to establish mapping
+        var uniqueLabels: [String] = []
+        var originalLabels: [String] = [] // Keep original casing
+        var labelMapping: [String: Int] = [:]
+        
+        for i in startIndex..<lines.count {
+            let components = lines[i].components(separatedBy: ",")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            
+            guard components.count >= 3,
+                  Double(components[0]) != nil,
+                  Double(components[1]) != nil else {
+                continue
+            }
+            
+            let originalLabel = components[2]
+            let labelString = originalLabel.lowercased()
+            if !uniqueLabels.contains(labelString) {
+                uniqueLabels.append(labelString)
+                originalLabels.append(originalLabel)
+            }
+        }
+        
+        // Ensure exactly two unique labels
+        guard uniqueLabels.count == 2 else {
+            dataPoints = []
+            return
+        }
+        
+        // Special case for true/false
+        if uniqueLabels.contains("true") && uniqueLabels.contains("false") {
+            labelMapping["false"] = -1
+            labelMapping["true"] = 1
+            // Set display labels preserving original case
+            let falseIndex = uniqueLabels.firstIndex(of: "false") ?? 0
+            let trueIndex = uniqueLabels.firstIndex(of: "true") ?? 1
+            negativeDisplayLabel = originalLabels[falseIndex]
+            positiveDisplayLabel = originalLabels[trueIndex]
+        } else {
+            // First encountered label = -1, second = +1
+            labelMapping[uniqueLabels[0]] = -1
+            labelMapping[uniqueLabels[1]] = 1
+            negativeDisplayLabel = originalLabels[0]
+            positiveDisplayLabel = originalLabels[1]
+        }
+        
+        // Second pass: parse data with label mapping
         for i in startIndex..<lines.count {
             let components = lines[i].components(separatedBy: ",")
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             
             guard components.count >= 3,
                   let x = Double(components[0]),
-                  let y = Double(components[1]),
-                  let label = Int(components[2]) else {
+                  let y = Double(components[1]) else {
                 continue
             }
             
-            newDataPoints.append(DataPoint(x: x, y: y, label: label))
+            let labelString = components[2].lowercased()
+            guard let numericLabel = labelMapping[labelString] else {
+                continue
+            }
+            
+            newDataPoints.append(DataPoint(x: x, y: y, label: numericLabel))
         }
         
         dataPoints = newDataPoints

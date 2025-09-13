@@ -10,7 +10,7 @@ struct ContentView: View {
             rightPanel
         }
         .padding()
-        .frame(minWidth: 1000, minHeight: 600)
+        .frame(minWidth: 1000, maxWidth: .infinity, minHeight: 600, maxHeight: .infinity)
         .onAppear {
             model.parseCSV()
         }
@@ -63,17 +63,26 @@ struct ContentView: View {
     }
     
     private var rightPanel: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Perceptron Visualization")
-                .font(.headline)
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Perceptron Visualization")
+                    .font(.headline)
+                
+                chartView
+                
+                legendView
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            chartView
-            
-            legendView
-            
-            controlsView
+            VStack(spacing: 0) {
+                Divider()
+                    .padding(.vertical, 8)
+                
+                controlsView
+                    .padding(.bottom, 8)
+            }
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private var chartView: some View {
@@ -106,7 +115,7 @@ struct ContentView: View {
         .chartYScale(domain: model.chartYRange)
         .chartXAxisLabel(model.xAxisLabel)
         .chartYAxisLabel(model.yAxisLabel)
-        .frame(height: 400)
+        .frame(minHeight: 300)
         .border(Color.gray, width: 1)
         .clipped()
         .onTapGesture(count: 2) {
@@ -159,7 +168,7 @@ struct ContentView: View {
                 Circle()
                     .fill(.red)
                     .frame(width: 12, height: 12)
-                Text("\(model.outputLabel): -1 (\(model.currentDataset?.negativeLabel ?? "FALSE"))")
+                Text("\(model.outputLabel): -1 (\(model.negativeDisplayLabel))")
                     .font(.caption)
             }
             
@@ -167,7 +176,7 @@ struct ContentView: View {
                 Circle()
                     .fill(.blue)
                     .frame(width: 12, height: 12)
-                Text("\(model.outputLabel): +1 (\(model.currentDataset?.positiveLabel ?? "TRUE"))")
+                Text("\(model.outputLabel): +1 (\(model.positiveDisplayLabel))")
                     .font(.caption)
             }
             
