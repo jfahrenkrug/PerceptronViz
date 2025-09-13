@@ -21,6 +21,22 @@ struct ContentView: View {
             Text("Training Data (CSV)")
                 .font(.headline)
             
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Dataset:")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Picker("Dataset", selection: $model.selectedDataset) {
+                    ForEach(model.datasets, id: \.name) { dataset in
+                        Text(dataset.name).tag(dataset.name)
+                    }
+                }
+                .pickerStyle(.menu)
+                .onChange(of: model.selectedDataset) { _, newValue in
+                    model.loadDataset(newValue)
+                }
+            }
+            
             Text("Format: x1,x2,label")
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -28,7 +44,7 @@ struct ContentView: View {
             TextEditor(text: $model.csvText)
                 .font(.system(.body, design: .monospaced))
                 .border(Color.gray, width: 1)
-                .frame(minHeight: 300)
+                .frame(minHeight: 250)
             
             Button("Parse Data") {
                 model.parseCSV()
@@ -72,25 +88,31 @@ struct ContentView: View {
             }
             
             if !model.dataPoints.isEmpty,
-               let xRange = xAxisRange,
-               let boundaryLine = model.decisionBoundaryLine(in: xRange) {
+               let boundaryPoints = model.decisionBoundaryLine(in: model.chartXRange, yRange: model.chartYRange),
+               boundaryPoints.count >= 2 {
                 LineMark(
-                    x: .value("X", boundaryLine.start.x),
-                    y: .value("Y", boundaryLine.start.y)
+                    x: .value("X", boundaryPoints[0].x),
+                    y: .value("Y", boundaryPoints[0].y)
                 )
                 LineMark(
-                    x: .value("X", boundaryLine.end.x),
-                    y: .value("Y", boundaryLine.end.y)
+                    x: .value("X", boundaryPoints[1].x),
+                    y: .value("Y", boundaryPoints[1].y)
                 )
                 .foregroundStyle(.green)
                 .lineStyle(StrokeStyle(lineWidth: 3))
             }
         }
+        .chartXScale(domain: model.chartXRange)
+        .chartYScale(domain: model.chartYRange)
         .chartXAxisLabel("X1")
         .chartYAxisLabel("X2")
         .frame(height: 400)
         .border(Color.gray, width: 1)
-        .help("Hover over data points to see labels")
+        .clipped()
+        .onTapGesture(count: 2) {
+            model.updateChartScale()
+        }
+        .help("Double-tap to reset view to fit data")
     }
     
     private var controlsView: some View {
@@ -101,43 +123,35 @@ struct ContentView: View {
             
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("W1 (Weight 1): \(model.w1, specifier: "%.2f")")
+                    Text("W1 (Weight 1): \(model.w1, specifier: "%.1f")")
                         .font(.caption)
-                    Slider(value: $model.w1, in: -10...10)
+                    Slider(value: $model.w1, in: -10...10, step: 0.1)
                         .frame(width: 250)
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("W2 (Weight 2): \(model.w2, specifier: "%.2f")")
+                    Text("W2 (Weight 2): \(model.w2, specifier: "%.1f")")
                         .font(.caption)
-                    Slider(value: $model.w2, in: -10...10)
+                    Slider(value: $model.w2, in: -10...10, step: 0.1)
                         .frame(width: 250)
                 }
             }
             
             VStack(alignment: .leading, spacing: 8) {
-                Text("Bias: \(model.bias, specifier: "%.2f")")
+                Text("Bias: \(model.bias, specifier: "%.1f")")
                     .font(.caption)
                 
-                Slider(value: $model.bias, in: -10...10)
+                Slider(value: $model.bias, in: -10...10, step: 0.1)
                     .frame(width: 250)
             }
             
-            Text("Decision boundary: \(model.w1, specifier: "%.2f")x₁ + \(model.w2, specifier: "%.2f")x₂ + \(model.bias, specifier: "%.2f") = 0")
+            Text("Decision boundary: \(model.w1, specifier: "%.1f")x₁ + \(model.w2, specifier: "%.1f")x₂ + \(model.bias, specifier: "%.1f") = 0")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .padding(.top, 8)
         }
     }
     
-    private var xAxisRange: ClosedRange<Double>? {
-        guard !model.dataPoints.isEmpty else { return nil }
-        let xValues = model.dataPoints.map { $0.x }
-        let minX = xValues.min() ?? 0
-        let maxX = xValues.max() ?? 0
-        let padding = (maxX - minX) * 0.1
-        return (minX - padding)...(maxX + padding)
-    }
     
     private var legendView: some View {
         HStack(spacing: 20) {
@@ -145,7 +159,7 @@ struct ContentView: View {
                 Circle()
                     .fill(.red)
                     .frame(width: 12, height: 12)
-                Text("Label: -1 (FALSE)")
+                Text("Label: -1 (\(model.currentDataset?.negativeLabel ?? "FALSE"))")
                     .font(.caption)
             }
             
@@ -153,11 +167,17 @@ struct ContentView: View {
                 Circle()
                     .fill(.blue)
                     .frame(width: 12, height: 12)
-                Text("Label: +1 (TRUE)")
+                Text("Label: +1 (\(model.currentDataset?.positiveLabel ?? "TRUE"))")
                     .font(.caption)
             }
             
             Spacer()
+            
+            Button("Reset View") {
+                model.updateChartScale()
+            }
+            .buttonStyle(.bordered)
+            .font(.caption)
         }
         .padding(.horizontal)
     }
