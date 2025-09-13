@@ -11,6 +11,9 @@ struct ContentView: View {
         }
         .padding()
         .frame(minWidth: 1000, minHeight: 600)
+        .onAppear {
+            model.parseCSV()
+        }
     }
     
     private var leftPanel: some View {
@@ -50,6 +53,8 @@ struct ContentView: View {
             
             chartView
             
+            legendView
+            
             controlsView
         }
         .frame(maxWidth: .infinity)
@@ -62,7 +67,7 @@ struct ContentView: View {
                     x: .value("X1", point.x),
                     y: .value("X2", point.y)
                 )
-                .foregroundStyle(point.label == 0 ? .red : .blue)
+                .foregroundStyle(point.label == -1 ? .red : .blue)
                 .symbolSize(100)
             }
             
@@ -85,6 +90,7 @@ struct ContentView: View {
         .chartYAxisLabel("X2")
         .frame(height: 400)
         .border(Color.gray, width: 1)
+        .help("Hover over data points to see labels")
     }
     
     private var controlsView: some View {
@@ -93,21 +99,19 @@ struct ContentView: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
             
-            HStack(spacing: 20) {
-                VStack(alignment: .leading) {
-                    Text("W1 (Weight 1)")
+            VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("W1 (Weight 1): \(model.w1, specifier: "%.2f")")
                         .font(.caption)
-                    TextField("W1", value: $model.w1, format: .number)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 100)
+                    Slider(value: $model.w1, in: -10...10)
+                        .frame(width: 250)
                 }
                 
-                VStack(alignment: .leading) {
-                    Text("W2 (Weight 2)")
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("W2 (Weight 2): \(model.w2, specifier: "%.2f")")
                         .font(.caption)
-                    TextField("W2", value: $model.w2, format: .number)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 100)
+                    Slider(value: $model.w2, in: -10...10)
+                        .frame(width: 250)
                 }
             }
             
@@ -115,8 +119,8 @@ struct ContentView: View {
                 Text("Bias: \(model.bias, specifier: "%.2f")")
                     .font(.caption)
                 
-                Slider(value: $model.bias, in: -5...5)
-                    .frame(width: 200)
+                Slider(value: $model.bias, in: -10...10)
+                    .frame(width: 250)
             }
             
             Text("Decision boundary: \(model.w1, specifier: "%.2f")x₁ + \(model.w2, specifier: "%.2f")x₂ + \(model.bias, specifier: "%.2f") = 0")
@@ -133,5 +137,28 @@ struct ContentView: View {
         let maxX = xValues.max() ?? 0
         let padding = (maxX - minX) * 0.1
         return (minX - padding)...(maxX + padding)
+    }
+    
+    private var legendView: some View {
+        HStack(spacing: 20) {
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(.red)
+                    .frame(width: 12, height: 12)
+                Text("Label: -1 (FALSE)")
+                    .font(.caption)
+            }
+            
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(.blue)
+                    .frame(width: 12, height: 12)
+                Text("Label: +1 (TRUE)")
+                    .font(.caption)
+            }
+            
+            Spacer()
+        }
+        .padding(.horizontal)
     }
 }

@@ -3,11 +3,11 @@ import SwiftUI
 
 @Observable
 class PerceptronModel {
-    var csvText: String = ""
+    var csvText: String = "0,0,-1\n0,1,-1\n1,0,-1\n1,1,1"
     var dataPoints: [DataPoint] = []
     var w1: Double = 1.0
     var w2: Double = 1.0
-    var bias: Double = 0.0
+    var bias: Double = -1.5
     
     func parseCSV() {
         let lines = csvText.components(separatedBy: .newlines)
