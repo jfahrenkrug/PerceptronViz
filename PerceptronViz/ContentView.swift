@@ -21,6 +21,15 @@ struct ContentView: View {
             Text("Training Data (CSV)")
                 .font(.headline)
             
+            TextEditor(text: $model.csvText)
+                .font(.system(.body, design: .monospaced))
+                .border(Color.gray, width: 1)
+                .frame(minHeight: 250)
+            
+            Text("Format: x1,x2,label")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
             VStack(alignment: .leading, spacing: 8) {
                 Text("Dataset:")
                     .font(.caption)
@@ -36,15 +45,6 @@ struct ContentView: View {
                     model.loadDataset(newValue)
                 }
             }
-            
-            Text("Format: x1,x2,label")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            TextEditor(text: $model.csvText)
-                .font(.system(.body, design: .monospaced))
-                .border(Color.gray, width: 1)
-                .frame(minHeight: 250)
             
             Button("Parse Data") {
                 model.parseCSV()
@@ -74,7 +74,7 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 Divider()
                     .padding(.vertical, 8)
                 
