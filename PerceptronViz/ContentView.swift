@@ -104,8 +104,8 @@ struct ContentView: View {
         }
         .chartXScale(domain: model.chartXRange)
         .chartYScale(domain: model.chartYRange)
-        .chartXAxisLabel("X1")
-        .chartYAxisLabel("X2")
+        .chartXAxisLabel(model.xAxisLabel)
+        .chartYAxisLabel(model.yAxisLabel)
         .frame(height: 400)
         .border(Color.gray, width: 1)
         .clipped()
@@ -145,7 +145,7 @@ struct ContentView: View {
                     .frame(width: 250)
             }
             
-            Text("Decision boundary: \(model.w1, specifier: "%.1f")x₁ + \(model.w2, specifier: "%.1f")x₂ + \(model.bias, specifier: "%.1f") = 0")
+            Text("Decision boundary: \(model.w1, specifier: "%.1f")×\(model.xAxisLabel) + \(model.w2, specifier: "%.1f")×\(model.yAxisLabel) + \(model.bias, specifier: "%.1f") = 0")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .padding(.top, 8)
@@ -159,7 +159,7 @@ struct ContentView: View {
                 Circle()
                     .fill(.red)
                     .frame(width: 12, height: 12)
-                Text("Label: -1 (\(model.currentDataset?.negativeLabel ?? "FALSE"))")
+                Text("\(model.outputLabel): -1 (\(model.currentDataset?.negativeLabel ?? "FALSE"))")
                     .font(.caption)
             }
             
@@ -167,7 +167,7 @@ struct ContentView: View {
                 Circle()
                     .fill(.blue)
                     .frame(width: 12, height: 12)
-                Text("Label: +1 (\(model.currentDataset?.positiveLabel ?? "TRUE"))")
+                Text("\(model.outputLabel): +1 (\(model.currentDataset?.positiveLabel ?? "TRUE"))")
                     .font(.caption)
             }
             

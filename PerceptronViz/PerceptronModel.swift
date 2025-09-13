@@ -20,7 +20,7 @@ struct Dataset {
 @Observable
 class PerceptronModel {
     var selectedDataset = "AND Gate"
-    var csvText: String = "0,0,-1\n0,1,-1\n1,0,-1\n1,1,1"
+    var csvText: String = "Input1,Input2,Output\n0,0,-1\n0,1,-1\n1,0,-1\n1,1,1"
     var dataPoints: [DataPoint] = []
     var w1: Double = 1.0
     var w2: Double = 1.0
@@ -30,27 +30,32 @@ class PerceptronModel {
     var chartXRange: ClosedRange<Double> = -0.5...1.5
     var chartYRange: ClosedRange<Double> = -0.5...1.5
     
+    // Headers from CSV
+    var xAxisLabel: String = "X1"
+    var yAxisLabel: String = "X2"
+    var outputLabel: String = "Output"
+    
     let datasets: [Dataset] = [
         Dataset(
             name: "AND Gate",
-            csvData: "0,0,-1\n0,1,-1\n1,0,-1\n1,1,1",
+            csvData: "Input1,Input2,Output\n0,0,-1\n0,1,-1\n1,0,-1\n1,1,1",
             description: "Classic AND gate logic"
         ),
         Dataset(
             name: "OR Gate",
-            csvData: "0,0,-1\n0,1,1\n1,0,1\n1,1,1",
+            csvData: "Input1,Input2,Output\n0,0,-1\n0,1,1\n1,0,1\n1,1,1",
             description: "Classic OR gate logic"
         ),
         Dataset(
             name: "Iris Flowers",
-            csvData: "5.1,3.5,-1\n4.9,3.0,-1\n4.7,3.2,-1\n4.6,3.1,-1\n5.0,3.6,-1\n5.4,3.9,-1\n4.6,3.4,-1\n5.0,3.4,-1\n4.4,2.9,-1\n4.9,3.1,-1\n7.0,3.2,1\n6.4,3.2,1\n6.9,3.1,1\n5.5,2.3,1\n6.5,2.8,1\n5.7,2.8,1\n6.3,3.3,1\n4.9,2.4,1\n6.6,2.9,1\n5.2,2.7,1",
+            csvData: "Sepal Length,Sepal Width,Species\n5.1,3.5,-1\n4.9,3.0,-1\n4.7,3.2,-1\n4.6,3.1,-1\n5.0,3.6,-1\n5.4,3.9,-1\n4.6,3.4,-1\n5.0,3.4,-1\n4.4,2.9,-1\n4.9,3.1,-1\n7.0,3.2,1\n6.4,3.2,1\n6.9,3.1,1\n5.5,2.3,1\n6.5,2.8,1\n5.7,2.8,1\n6.3,3.3,1\n4.9,2.4,1\n6.6,2.9,1\n5.2,2.7,1",
             description: "Setosa vs Versicolor iris flowers (sepal dimensions)",
             negativeLabel: "Setosa",
             positiveLabel: "Versicolor"
         ),
         Dataset(
             name: "UIKit vs SwiftUI",
-            csvData: "8.5,2,-1\n12.0,1,-1\n15.2,3,-1\n18.7,2,-1\n22.1,4,-1\n25.3,3,-1\n28.9,5,-1\n32.4,4,-1\n35.8,6,-1\n40.2,5,-1\n3.2,8,1\n4.1,12,1\n2.8,15,1\n5.3,18,1\n3.9,22,1\n4.7,25,1\n2.4,28,1\n5.8,32,1\n3.6,35,1\n4.2,38,1",
+            csvData: "Dev Time (hours),Bug Count,Framework\n8.5,2,-1\n12.0,1,-1\n15.2,3,-1\n18.7,2,-1\n22.1,4,-1\n25.3,3,-1\n28.9,5,-1\n32.4,4,-1\n35.8,6,-1\n40.2,5,-1\n3.2,8,1\n4.1,12,1\n2.8,15,1\n5.3,18,1\n3.9,22,1\n4.7,25,1\n2.4,28,1\n5.8,32,1\n3.6,35,1\n4.2,38,1",
             description: "Development time (hours) vs bugs: UIKit (slower, fewer bugs) vs SwiftUI (faster, more bugs)",
             negativeLabel: "UIKit",
             positiveLabel: "SwiftUI"
@@ -62,10 +67,35 @@ class PerceptronModel {
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
         
-        var newDataPoints: [DataPoint] = []
+        guard !lines.isEmpty else {
+            dataPoints = []
+            return
+        }
         
-        for line in lines {
-            let components = line.components(separatedBy: ",")
+        var newDataPoints: [DataPoint] = []
+        var startIndex = 0
+        
+        // Check if first line contains headers (non-numeric first column)
+        let firstLineComponents = lines[0].components(separatedBy: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        
+        if firstLineComponents.count >= 3 && Double(firstLineComponents[0]) == nil {
+            // First line contains headers
+            xAxisLabel = firstLineComponents[0]
+            yAxisLabel = firstLineComponents[1]
+            outputLabel = firstLineComponents[2]
+            startIndex = 1
+        } else {
+            // No headers, use defaults
+            xAxisLabel = "X1"
+            yAxisLabel = "X2"
+            outputLabel = "Output"
+            startIndex = 0
+        }
+        
+        // Parse data lines
+        for i in startIndex..<lines.count {
+            let components = lines[i].components(separatedBy: ",")
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             
             guard components.count >= 3,

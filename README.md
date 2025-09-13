@@ -8,7 +8,8 @@ A SwiftUI macOS application that demonstrates how a perceptron works for binary 
 - **Real-time decision boundary**: Watch the linear separator update as you adjust weights and bias
 - **Smart chart scaling**: Automatically fits each dataset perfectly, no jarring scale jumps
 - **Properly clipped decision line**: Boundary line stays within chart bounds
-- **Dataset-aware legends**: Labels update based on the selected dataset (e.g., "Setosa" vs "Versicolor" for Iris)
+- **Dynamic labeling**: Axis labels, legends, and equations automatically update based on CSV headers
+- **Self-documenting charts**: Each dataset shows its own meaningful labels (e.g., "Sepal Length" vs "Sepal Width")
 
 ### 📊 Multiple Dataset Options
 Choose from preset datasets via the dropdown menu:
@@ -29,8 +30,9 @@ Choose from preset datasets via the dropdown menu:
 
 ### 📝 Data Input & View Controls
 - **CSV text editor**: Paste your own training data
-- **Format**: `x1,x2,label` (three columns)
-- **Parse button**: Load your custom dataset
+- **Smart header detection**: First line can contain column headers for automatic labeling
+- **Flexible format**: `header1,header2,output_label` or just data rows
+- **Parse button**: Load your custom dataset  
 - **Real-time feedback**: Shows number of parsed data points
 - **Reset View button**: Instantly fit the chart to show all data points
 - **Double-tap chart**: Alternative way to reset the view to fit data
