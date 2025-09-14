@@ -366,6 +366,13 @@ struct ContentView: View {
                     Divider()
                         .frame(height: 350)
                     
+                    // Data Points Table
+                    dataPointsTable()
+                        .frame(width: 200, height: 322)
+                    
+                    Divider()
+                        .frame(height: 350)
+                    
                     // Calculation Details
                     stepCalculationDetails(for: model.trainingErrors.last)
                         .frame(width: 500, height: 322)
@@ -507,52 +514,65 @@ struct ContentView: View {
                                 
                                 // W1 calculation with labels
                                 VStack(alignment: .leading, spacing: 4) {
-                                    HStack {
+                                    HStack(alignment: .top) {
                                         Text("W1:")
                                             .font(.system(.title3, design: .monospaced))
                                             .frame(width: 60, alignment: .leading)
                                             .fontWeight(.medium)
                                         Text("\(String(format: "%.2f", oldWeights.w1)) + (\(String(format: "%.2f", lr)) × \(errorValue, specifier: "%.0f") × \(String(format: "%.1f", point.x))) = \(String(format: "%.2f", newWeights.w1))")
                                             .font(.system(.title3, design: .monospaced))
+                                            .frame(maxWidth: .infinity, alignment: .leading)
                                     }
-                                    Text("     old     + (rate × err × inp)    = new")
-                                        .font(.system(.caption, design: .monospaced))
-                                        .foregroundColor(.orange)
-                                        .padding(.leading, 60)
+                                    HStack {
+                                        Text("     old     + (rate × err × inp)    = new")
+                                            .font(.system(.caption, design: .monospaced))
+                                            .foregroundColor(.orange)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .padding(.leading, 60)
                                 }
                                 
                                 // W2 calculation with labels
                                 VStack(alignment: .leading, spacing: 4) {
-                                    HStack {
+                                    HStack(alignment: .top) {
                                         Text("W2:")
                                             .font(.system(.title3, design: .monospaced))
                                             .frame(width: 60, alignment: .leading)
                                             .fontWeight(.medium)
                                         Text("\(String(format: "%.2f", oldWeights.w2)) + (\(String(format: "%.2f", lr)) × \(errorValue, specifier: "%.0f") × \(String(format: "%.1f", point.y))) = \(String(format: "%.2f", newWeights.w2))")
                                             .font(.system(.title3, design: .monospaced))
+                                            .frame(maxWidth: .infinity, alignment: .leading)
                                     }
-                                    Text("     old     + (rate × err × inp)    = new")
-                                        .font(.system(.caption, design: .monospaced))
-                                        .foregroundColor(.orange)
-                                        .padding(.leading, 60)
+                                    HStack {
+                                        Text("     old     + (rate × err × inp)    = new")
+                                            .font(.system(.caption, design: .monospaced))
+                                            .foregroundColor(.orange)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .padding(.leading, 60)
                                 }
                                 
                                 // Bias calculation with labels
                                 VStack(alignment: .leading, spacing: 4) {
-                                    HStack {
+                                    HStack(alignment: .top) {
                                         Text("Bias:")
                                             .font(.system(.title3, design: .monospaced))
                                             .frame(width: 60, alignment: .leading)
                                             .fontWeight(.medium)
                                         Text("\(String(format: "%.2f", oldWeights.bias)) + (\(String(format: "%.2f", lr)) × \(errorValue, specifier: "%.0f") × 1) = \(String(format: "%.2f", newWeights.bias))")
                                             .font(.system(.title3, design: .monospaced))
+                                            .frame(maxWidth: .infinity, alignment: .leading)
                                     }
-                                    Text("      old     + (rate × err × 1)     = new")
-                                        .font(.system(.caption, design: .monospaced))
-                                        .foregroundColor(.orange)
-                                        .padding(.leading, 60)
+                                    HStack {
+                                        Text("      old     + (rate × err × 1)     = new")
+                                            .font(.system(.caption, design: .monospaced))
+                                            .foregroundColor(.orange)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .padding(.leading, 60)
                                 }
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.leading, 16)
                         } else {
                             VStack {
@@ -560,6 +580,7 @@ struct ContentView: View {
                                     .font(.body)
                                     .foregroundColor(.green)
                                     .italic()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 Spacer()
                             }
                             .frame(maxHeight: .infinity)
@@ -572,11 +593,98 @@ struct ContentView: View {
                     .font(.body)
                     .foregroundColor(.secondary)
                     .italic()
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(20)
         .background(Color.gray.opacity(0.08))
         .cornerRadius(12)
-        .padding(.top, 12)
+    }
+    
+    @ViewBuilder
+    private func dataPointsTable() -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Training Data")
+                .font(.headline)
+            
+            ScrollView {
+                VStack(spacing: 2) {
+                    // Header
+                    HStack(spacing: 4) {
+                        Text("#")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .frame(width: 25, alignment: .center)
+                        Text(model.xAxisLabel)
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .frame(width: 50, alignment: .center)
+                        Text(model.yAxisLabel)
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .frame(width: 50, alignment: .center)
+                        Text("Label")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .frame(width: 40, alignment: .center)
+                    }
+                    .padding(.vertical, 4)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(4)
+                    
+                    // Data rows
+                    ForEach(Array(model.dataPoints.enumerated()), id: \.element.id) { index, point in
+                        let isCurrentStep = isCurrentTrainingPoint(index: index)
+                        
+                        HStack(spacing: 4) {
+                            Text("\(index + 1)")
+                                .font(.caption)
+                                .frame(width: 25, alignment: .center)
+                            Text(String(format: "%.1f", point.x))
+                                .font(.system(.caption, design: .monospaced))
+                                .frame(width: 50, alignment: .center)
+                            Text(String(format: "%.1f", point.y))
+                                .font(.system(.caption, design: .monospaced))
+                                .frame(width: 50, alignment: .center)
+                            Text("\(point.label)")
+                                .font(.caption)
+                                .fontWeight(.medium)
+                                .frame(width: 40, alignment: .center)
+                                .foregroundColor(model.colorForClassification(point.label))
+                        }
+                        .padding(.vertical, 3)
+                        .padding(.horizontal, 4)
+                        .background(isCurrentStep ? Color.yellow.opacity(0.3) : Color.clear)
+                        .cornerRadius(4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 4)
+                                .stroke(isCurrentStep ? Color.orange : Color.clear, lineWidth: 2)
+                        )
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(Color.gray.opacity(0.05))
+        .cornerRadius(8)
+    }
+    
+    private func isCurrentTrainingPoint(index: Int) -> Bool {
+        guard let lastStep = model.trainingErrors.last,
+              let currentPoint = lastStep.currentPoint else {
+            return false
+        }
+        
+        // Find the matching data point
+        return model.dataPoints[safe: index]?.x == currentPoint.x &&
+               model.dataPoints[safe: index]?.y == currentPoint.y &&
+               model.dataPoints[safe: index]?.label == currentPoint.label
+    }
+}
+
+extension Array {
+    subscript(safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
     }
 }
