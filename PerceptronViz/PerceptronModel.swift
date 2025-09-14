@@ -215,25 +215,31 @@ class PerceptronModel {
         return Array(uniquePoints.prefix(2))
     }
     
-    func classifyInput() -> String {
+    // MARK: - Centralized Perceptron Prediction
+    
+    func predict(x1: Double, x2: Double) -> Int {
+        let result = w1 * x1 + w2 * x2 + bias
+        return result >= 0 ? 1 : -1
+    }
+    
+    var currentPrediction: Int? {
         guard let x1 = Double(inputX1), let x2 = Double(inputX2) else {
+            return nil
+        }
+        return predict(x1: x1, x2: x2)
+    }
+    
+    func classifyInput() -> String {
+        guard let prediction = currentPrediction else {
             return "Invalid input"
         }
-        
-        let result = w1 * x1 + w2 * x2 + bias
-        let prediction = result >= 0 ? 1 : -1
-        
         return prediction == -1 ? negativeDisplayLabel : positiveDisplayLabel
     }
     
     func getClassificationColor() -> Color {
-        guard let x1 = Double(inputX1), let x2 = Double(inputX2) else {
+        guard let prediction = currentPrediction else {
             return .primary
         }
-        
-        let result = w1 * x1 + w2 * x2 + bias
-        let prediction = result >= 0 ? 1 : -1
-        
         // Consistent with chart coloring: -1 = red, +1 = blue
         return prediction == -1 ? .red : .blue
     }
