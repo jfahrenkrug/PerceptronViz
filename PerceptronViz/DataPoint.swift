@@ -12,3 +12,10 @@ struct DataPoint: Identifiable, Hashable {
         self.label = label
     }
 }
+
+struct TrainingError: Identifiable {
+    let id = UUID()
+    let step: Int
+    let errors: Int
+    let wasError: Bool
+}

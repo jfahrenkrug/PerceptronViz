@@ -7,7 +7,7 @@ struct Dataset {
     let description: String
 }
 
-@Observable
+@Observable @MainActor
 class PerceptronModel {
     var selectedDataset = "AND Gate"
     var csvText: String = "Input1,Input2,Classification,Label\n0,0,-1,False\n0,1,-1,False\n1,0,-1,False\n1,1,1,True"
@@ -32,6 +32,18 @@ class PerceptronModel {
     // Interactive prediction inputs
     var inputX1: String = "0.5"
     var inputX2: String = "0.5"
+    
+    // Training state
+    var isTraining: Bool = false
+    var showTrainingArea: Bool = false
+    var maxEpochs: Int = 100
+    var pauseDuration: Double = 0.5
+    var currentEpoch: Int = 0
+    var currentStep: Int = 0
+    var trainingErrors: [TrainingError] = []
+    var learningRate: Double = 0.1
+    var shuffledPoints: [DataPoint] = []
+    var currentPointIndex: Int = 0
     
     let datasets: [Dataset] = [
         Dataset(
@@ -301,6 +313,111 @@ class PerceptronModel {
     func colorForClassification(_ classification: Int) -> Color {
         // Consistent with chart coloring: -1 = red, +1 = blue
         return classification == -1 ? .red : .blue
+    }
+    
+    // MARK: - Training Methods
+    
+    func startTraining() {
+        guard !dataPoints.isEmpty && !isTraining else { return }
+        isTraining = true
+        currentEpoch = 0
+        currentStep = 0
+        trainingErrors = []
+        shuffledPoints = dataPoints.shuffled()
+        currentPointIndex = 0
+        continueTraining()
+    }
+    
+    private func continueTraining() {
+        guard isTraining && currentEpoch < maxEpochs else {
+            isTraining = false
+            return
+        }
+        
+        performTrainingStep()
+        
+        if isTraining {
+            DispatchQueue.main.asyncAfter(deadline: .now() + pauseDuration) {
+                self.continueTraining()
+            }
+        }
+    }
+    
+    func stopTraining() {
+        isTraining = false
+    }
+    
+    func stepTraining() {
+        guard !dataPoints.isEmpty && !isTraining else { return }
+        if currentStep == 0 {
+            // Initialize for manual stepping
+            shuffledPoints = dataPoints.shuffled()
+            currentPointIndex = 0
+            currentEpoch = 0
+        }
+        performTrainingStep()
+    }
+    
+    private func performTrainingStep() {
+        // Check if we need to start a new epoch
+        if currentPointIndex >= shuffledPoints.count {
+            currentEpoch += 1
+            currentPointIndex = 0
+            shuffledPoints = dataPoints.shuffled()
+            
+            // Stop if we've reached max epochs
+            if currentEpoch >= maxEpochs {
+                isTraining = false
+                return
+            }
+        }
+        
+        // Get the current point to train on
+        let point = shuffledPoints[currentPointIndex]
+        let prediction = predict(x1: point.x, x2: point.y)
+        let actual = point.label
+        
+        var wasError = false
+        
+        // If prediction is wrong, update weights
+        if prediction != actual {
+            wasError = true
+            
+            // Perceptron weight update rule
+            let error = Double(actual - prediction)
+            w1 += learningRate * error * point.x
+            w2 += learningRate * error * point.y
+            bias += learningRate * error
+        }
+        
+        // Calculate current total errors across all data points
+        let totalErrors = dataPoints.reduce(0) { count, dataPoint in
+            let pred = predict(x1: dataPoint.x, x2: dataPoint.y)
+            return count + (pred != dataPoint.label ? 1 : 0)
+        }
+        
+        currentStep += 1
+        currentPointIndex += 1
+        
+        // Record this step
+        trainingErrors.append(TrainingError(step: currentStep, errors: totalErrors, wasError: wasError))
+        
+        // Stop if we've achieved perfect classification
+        if totalErrors == 0 {
+            isTraining = false
+        }
+    }
+    
+    func resetTraining() {
+        isTraining = false
+        currentEpoch = 0
+        currentStep = 0
+        currentPointIndex = 0
+        trainingErrors = []
+        shuffledPoints = []
+        
+        // Reset to initial parameters based on dataset
+        initializePerceptronParameters()
     }
     
     var inputPoint: (x: Double, y: Double)? {

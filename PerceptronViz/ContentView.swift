@@ -5,12 +5,18 @@ struct ContentView: View {
     @State private var model = PerceptronModel()
     
     var body: some View {
-        HStack(spacing: 20) {
-            leftPanel
-            rightPanel
+        VStack(spacing: 0) {
+            HStack(spacing: 20) {
+                leftPanel
+                rightPanel
+            }
+            .padding()
+            .frame(minWidth: 1000, maxWidth: .infinity, minHeight: 600, maxHeight: .infinity)
+            
+            if model.showTrainingArea {
+                trainingArea
+            }
         }
-        .padding()
-        .frame(minWidth: 1000, maxWidth: .infinity, minHeight: 600, maxHeight: .infinity)
         .onAppear {
             model.parseCSV()
         }
@@ -303,7 +309,141 @@ struct ContentView: View {
             }
             .buttonStyle(.bordered)
             .font(.caption)
+            
+            Button(model.showTrainingArea ? "Hide Training" : "Show Training") {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    model.showTrainingArea.toggle()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .font(.caption)
         }
         .padding(.horizontal)
+    }
+    
+    private var trainingArea: some View {
+        VStack(spacing: 0) {
+            Divider()
+            
+            VStack(spacing: 16) {
+                HStack {
+                    Text("Training")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                
+                HStack(alignment: .top, spacing: 24) {
+                    // Training Chart
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Training Progress")
+                            .font(.headline)
+                        
+                        Chart(model.trainingErrors) { errorData in
+                            LineMark(
+                                x: .value("Step", errorData.step),
+                                y: .value("Errors", errorData.errors)
+                            )
+                            .foregroundStyle(.red)
+                            .lineStyle(StrokeStyle(lineWidth: 2))
+                            
+                            PointMark(
+                                x: .value("Step", errorData.step),
+                                y: .value("Errors", errorData.errors)
+                            )
+                            .foregroundStyle(errorData.wasError ? .orange : .red)
+                            .symbolSize(errorData.wasError ? 60 : 30)
+                        }
+                        .frame(height: 200)
+                        .chartXAxisLabel("Training Step")
+                        .chartYAxisLabel("Total Errors")
+                        .border(Color.gray.opacity(0.3), width: 1)
+                    }
+                    .frame(maxWidth: .infinity)
+                    
+                    Divider()
+                        .frame(height: 200)
+                    
+                    // Training Controls
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Training Controls")
+                            .font(.headline)
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Max Epochs: \(model.maxEpochs)")
+                                    .font(.body)
+                                Slider(value: Binding(
+                                    get: { Double(model.maxEpochs) },
+                                    set: { model.maxEpochs = Int($0) }
+                                ), in: 10...500, step: 10)
+                                .frame(width: 200)
+                                .disabled(model.isTraining)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Pause: \(model.pauseDuration, specifier: "%.1f")s")
+                                    .font(.body)
+                                Slider(value: $model.pauseDuration, in: 0.1...2.0, step: 0.1)
+                                    .frame(width: 200)
+                                    .disabled(model.isTraining)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Learning Rate: \(model.learningRate, specifier: "%.2f")")
+                                    .font(.body)
+                                Slider(value: $model.learningRate, in: 0.01...1.0, step: 0.01)
+                                    .frame(width: 200)
+                                    .disabled(model.isTraining)
+                            }
+                        }
+                        
+                        HStack(spacing: 12) {
+                            if model.isTraining {
+                                Button("Stop Training") {
+                                    model.stopTraining()
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(.red)
+                            } else {
+                                Button("Start Training") {
+                                    model.startTraining()
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .disabled(model.dataPoints.isEmpty)
+                                
+                                Button("Step") {
+                                    model.stepTraining()
+                                }
+                                .buttonStyle(.bordered)
+                                .disabled(model.dataPoints.isEmpty)
+                            }
+                            
+                            Button("Reset") {
+                                model.resetTraining()
+                            }
+                            .buttonStyle(.bordered)
+                            .disabled(model.isTraining)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Epoch: \(model.currentEpoch)")
+                                .font(.body)
+                            Text("Step: \(model.currentStep)")
+                                .font(.body)
+                            Text("Total Errors: \(model.trainingErrors.last?.errors ?? 0)")
+                                .font(.body)
+                        }
+                        .foregroundColor(.secondary)
+                    }
+                    .frame(width: 250)
+                }
+                .padding(.horizontal)
+            }
+            .padding(.vertical)
+        }
+        .background(Color.gray.opacity(0.05))
     }
 }
