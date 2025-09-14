@@ -287,6 +287,17 @@ class PerceptronModel {
         return colorForClassification(prediction)
     }
     
+    func getCalculationDisplay() -> String {
+        guard let x1 = Double(inputX1), let x2 = Double(inputX2) else {
+            return "Invalid input"
+        }
+        
+        let result = w1 * x1 + w2 * x2 + bias
+        let prediction = result >= 0 ? 1 : -1
+        
+        return "(\(String(format: "%.1f", x1)) × \(String(format: "%.1f", w1))) + (\(String(format: "%.1f", x2)) × \(String(format: "%.1f", w2))) + \(String(format: "%.1f", bias)) = \(String(format: "%.2f", result))\nActivation: \(String(format: "%.2f", result)) ≥ 0 ? → \(prediction)"
+    }
+    
     func colorForClassification(_ classification: Int) -> Color {
         // Consistent with chart coloring: -1 = red, +1 = blue
         return classification == -1 ? .red : .blue

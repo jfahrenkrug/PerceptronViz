@@ -186,19 +186,67 @@ struct ContentView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("\(model.xAxisLabel):")
                             .font(.body)
-                        TextField("Enter \(model.xAxisLabel)", text: $model.inputX1)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: 150)
-                            .font(.title2)
+                        HStack(spacing: 4) {
+                            TextField("Enter \(model.xAxisLabel)", text: $model.inputX1)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 100)
+                                .font(.title2)
+                            
+                            Button("-") {
+                                if let current = Double(model.inputX1) {
+                                    model.inputX1 = String(format: "%.1f", current - 0.5)
+                                }
+                            }
+                            .buttonStyle(.bordered)
+                            .frame(width: 30, height: 34)
+                            
+                            Button("+") {
+                                if let current = Double(model.inputX1) {
+                                    model.inputX1 = String(format: "%.1f", current + 0.5)
+                                }
+                            }
+                            .buttonStyle(.bordered)
+                            .frame(width: 30, height: 34)
+                        }
                     }
                     
                     VStack(alignment: .leading, spacing: 8) {
                         Text("\(model.yAxisLabel):")
                             .font(.body)
-                        TextField("Enter \(model.yAxisLabel)", text: $model.inputX2)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: 150)
-                            .font(.title2)
+                        HStack(spacing: 4) {
+                            TextField("Enter \(model.yAxisLabel)", text: $model.inputX2)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 100)
+                                .font(.title2)
+                            
+                            Button("-") {
+                                if let current = Double(model.inputX2) {
+                                    model.inputX2 = String(format: "%.1f", current - 0.5)
+                                }
+                            }
+                            .buttonStyle(.bordered)
+                            .frame(width: 30, height: 34)
+                            
+                            Button("+") {
+                                if let current = Double(model.inputX2) {
+                                    model.inputX2 = String(format: "%.1f", current + 0.5)
+                                }
+                            }
+                            .buttonStyle(.bordered)
+                            .frame(width: 30, height: 34)
+                        }
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Calculation:")
+                            .font(.body)
+                        Text(model.getCalculationDisplay())
+                            .font(.system(.title3, design: .monospaced))
+                            .foregroundColor(.secondary)
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 10)
+                            .background(Color.gray.opacity(0.05))
+                            .cornerRadius(6)
                     }
                     
                     VStack(alignment: .leading, spacing: 8) {
