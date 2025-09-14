@@ -170,6 +170,7 @@ struct ContentView: View {
                     .font(.body)
                     .foregroundColor(.secondary)
                     .padding(.top, 12)
+                    .frame(width: 350, alignment: .leading)
             }
             
             // Vertical divider
