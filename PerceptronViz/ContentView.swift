@@ -92,7 +92,7 @@ struct ContentView: View {
                     x: .value("X1", point.x),
                     y: .value("X2", point.y)
                 )
-                .foregroundStyle(point.label == -1 ? .red : .blue)
+                .foregroundStyle(model.colorForClassification(point.label))
                 .symbolSize(100)
             }
             

@@ -122,6 +122,7 @@ class PerceptronModel {
         
         dataPoints = newDataPoints
         updateChartScale()
+        initializePerceptronParameters()
     }
     
     func loadDataset(_ datasetName: String) {
@@ -147,6 +148,42 @@ class PerceptronModel {
         
         chartXRange = (minX - xPadding)...(maxX + xPadding)
         chartYRange = (minY - yPadding)...(maxY + yPadding)
+    }
+    
+    func initializePerceptronParameters() {
+        guard !dataPoints.isEmpty else { return }
+        
+        // Separate positive and negative examples
+        let positivePoints = dataPoints.filter { $0.label == 1 }
+        let negativePoints = dataPoints.filter { $0.label == -1 }
+        
+        guard !positivePoints.isEmpty && !negativePoints.isEmpty else { return }
+        
+        // Calculate centroids
+        let positiveCentroid = (
+            x: positivePoints.map { $0.x }.reduce(0, +) / Double(positivePoints.count),
+            y: positivePoints.map { $0.y }.reduce(0, +) / Double(positivePoints.count)
+        )
+        let negativeCentroid = (
+            x: negativePoints.map { $0.x }.reduce(0, +) / Double(negativePoints.count),
+            y: negativePoints.map { $0.y }.reduce(0, +) / Double(negativePoints.count)
+        )
+        
+        // Set weights to separate the centroids
+        let deltaX = positiveCentroid.x - negativeCentroid.x
+        let deltaY = positiveCentroid.y - negativeCentroid.y
+        
+        // Normalize and set weights
+        let magnitude = sqrt(deltaX * deltaX + deltaY * deltaY)
+        if magnitude > 0 {
+            w1 = deltaX / magnitude
+            w2 = deltaY / magnitude
+            
+            // Set bias to position boundary between centroids
+            let midpointX = (positiveCentroid.x + negativeCentroid.x) / 2
+            let midpointY = (positiveCentroid.y + negativeCentroid.y) / 2
+            bias = -(w1 * midpointX + w2 * midpointY)
+        }
     }
     
     func zoomChart(scaleX: Double, scaleY: Double, centerX: Double, centerY: Double) {
@@ -222,6 +259,13 @@ class PerceptronModel {
         return result >= 0 ? 1 : -1
     }
     
+    func debugPrediction(x1: Double, x2: Double) -> String {
+        let result = w1 * x1 + w2 * x2 + bias
+        let prediction = result >= 0 ? 1 : -1
+        let label = prediction == -1 ? negativeDisplayLabel : positiveDisplayLabel
+        return "Input: (\(x1), \(x2)) → \(w1)*\(x1) + \(w2)*\(x2) + \(bias) = \(result) → \(prediction) → \(label)"
+    }
+    
     var currentPrediction: Int? {
         guard let x1 = Double(inputX1), let x2 = Double(inputX2) else {
             return nil
@@ -240,8 +284,12 @@ class PerceptronModel {
         guard let prediction = currentPrediction else {
             return .primary
         }
+        return colorForClassification(prediction)
+    }
+    
+    func colorForClassification(_ classification: Int) -> Color {
         // Consistent with chart coloring: -1 = red, +1 = blue
-        return prediction == -1 ? .red : .blue
+        return classification == -1 ? .red : .blue
     }
     
     var inputPoint: (x: Double, y: Double)? {
