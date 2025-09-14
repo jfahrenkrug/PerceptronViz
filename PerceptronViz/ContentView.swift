@@ -110,6 +110,17 @@ struct ContentView: View {
                 .foregroundStyle(.green)
                 .lineStyle(StrokeStyle(lineWidth: 3))
             }
+            
+            // User input point
+            if let inputPoint = model.inputPoint {
+                PointMark(
+                    x: .value("X1", inputPoint.x),
+                    y: .value("X2", inputPoint.y)
+                )
+                .foregroundStyle(.green)
+                .symbolSize(150)
+                .symbol(.circle)
+            }
         }
         .chartXScale(domain: model.chartXRange)
         .chartYScale(domain: model.chartYRange)
@@ -125,39 +136,87 @@ struct ContentView: View {
     }
     
     private var controlsView: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Perceptron Parameters")
-                .font(.subheadline)
-                .fontWeight(.medium)
-            
+        HStack(alignment: .top, spacing: 24) {
+            // Left side: Parameters
             VStack(alignment: .leading, spacing: 16) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("W1 (Weight 1): \(model.w1, specifier: "%.1f")")
-                        .font(.caption)
-                    Slider(value: $model.w1, in: -10...10, step: 0.1)
-                        .frame(width: 250)
+                Text("Perceptron Parameters")
+                    .font(.title3)
+                    .fontWeight(.medium)
+                
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("W1 (Weight 1): \(model.w1, specifier: "%.1f")")
+                            .font(.body)
+                        Slider(value: $model.w1, in: -10...10, step: 0.1)
+                            .frame(width: 280)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("W2 (Weight 2): \(model.w2, specifier: "%.1f")")
+                            .font(.body)
+                        Slider(value: $model.w2, in: -10...10, step: 0.1)
+                            .frame(width: 280)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Bias: \(model.bias, specifier: "%.1f")")
+                            .font(.body)
+                        Slider(value: $model.bias, in: -10...10, step: 0.1)
+                            .frame(width: 280)
+                    }
                 }
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("W2 (Weight 2): \(model.w2, specifier: "%.1f")")
-                        .font(.caption)
-                    Slider(value: $model.w2, in: -10...10, step: 0.1)
-                        .frame(width: 250)
+                Text("Decision boundary: \(model.w1, specifier: "%.1f")×\(model.xAxisLabel) + \(model.w2, specifier: "%.1f")×\(model.yAxisLabel) + \(model.bias, specifier: "%.1f") = 0")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 12)
+            }
+            
+            // Vertical divider
+            Divider()
+                .frame(height: 200)
+            
+            // Right side: Test Classification
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Test Classification")
+                    .font(.title3)
+                    .fontWeight(.medium)
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("\(model.xAxisLabel):")
+                            .font(.body)
+                        TextField("Enter \(model.xAxisLabel)", text: $model.inputX1)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 150)
+                            .font(.title2)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("\(model.yAxisLabel):")
+                            .font(.body)
+                        TextField("Enter \(model.yAxisLabel)", text: $model.inputX2)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 150)
+                            .font(.title2)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Prediction:")
+                            .font(.body)
+                        Text(model.classifyInput())
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(model.getClassificationColor())
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(8)
+                    }
                 }
             }
             
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Bias: \(model.bias, specifier: "%.1f")")
-                    .font(.caption)
-                
-                Slider(value: $model.bias, in: -10...10, step: 0.1)
-                    .frame(width: 250)
-            }
-            
-            Text("Decision boundary: \(model.w1, specifier: "%.1f")×\(model.xAxisLabel) + \(model.w2, specifier: "%.1f")×\(model.yAxisLabel) + \(model.bias, specifier: "%.1f") = 0")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding(.top, 8)
+            Spacer()
         }
     }
     
@@ -177,6 +236,14 @@ struct ContentView: View {
                     .fill(.blue)
                     .frame(width: 12, height: 12)
                 Text("\(model.outputLabel): +1 (\(model.positiveDisplayLabel))")
+                    .font(.caption)
+            }
+            
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(.green)
+                    .frame(width: 12, height: 12)
+                Text("Test Input")
                     .font(.caption)
             }
             

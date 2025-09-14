@@ -5,22 +5,12 @@ struct Dataset {
     let name: String
     let csvData: String
     let description: String
-    let negativeLabel: String
-    let positiveLabel: String
-    
-    init(name: String, csvData: String, description: String, negativeLabel: String = "FALSE", positiveLabel: String = "TRUE") {
-        self.name = name
-        self.csvData = csvData
-        self.description = description
-        self.negativeLabel = negativeLabel
-        self.positiveLabel = positiveLabel
-    }
 }
 
 @Observable
 class PerceptronModel {
     var selectedDataset = "AND Gate"
-    var csvText: String = "Input1,Input2,Output\n0,0,False\n0,1,False\n1,0,False\n1,1,True"
+    var csvText: String = "Input1,Input2,Classification,Label\n0,0,-1,False\n0,1,-1,False\n1,0,-1,False\n1,1,1,True"
     var dataPoints: [DataPoint] = []
     var w1: Double = 1.0
     var w2: Double = 1.0
@@ -35,34 +25,34 @@ class PerceptronModel {
     var yAxisLabel: String = "X2"
     var outputLabel: String = "Output"
     
-    // Actual labels from CSV data (preserving original casing)
+    // Display labels from CSV (4th column)
     var negativeDisplayLabel: String = "FALSE"
     var positiveDisplayLabel: String = "TRUE"
+    
+    // Interactive prediction inputs
+    var inputX1: String = "0.5"
+    var inputX2: String = "0.5"
     
     let datasets: [Dataset] = [
         Dataset(
             name: "AND Gate",
-            csvData: "Input1,Input2,Output\n0,0,False\n0,1,False\n1,0,False\n1,1,True",
+            csvData: "Input1,Input2,Classification,Label\n0,0,-1,False\n0,1,-1,False\n1,0,-1,False\n1,1,1,True",
             description: "Classic AND gate logic"
         ),
         Dataset(
             name: "OR Gate",
-            csvData: "Input1,Input2,Output\n0,0,False\n0,1,True\n1,0,True\n1,1,True",
+            csvData: "Input1,Input2,Classification,Label\n0,0,-1,False\n0,1,1,True\n1,0,1,True\n1,1,1,True",
             description: "Classic OR gate logic"
         ),
         Dataset(
             name: "Iris Flowers",
-            csvData: "Sepal Length,Sepal Width,Species\n5.1,3.5,Setosa\n4.9,3.0,Setosa\n4.7,3.2,Setosa\n4.6,3.1,Setosa\n5.0,3.6,Setosa\n5.4,3.9,Setosa\n4.6,3.4,Setosa\n5.0,3.4,Setosa\n4.4,2.9,Setosa\n4.9,3.1,Setosa\n7.0,3.2,Versicolor\n6.4,3.2,Versicolor\n6.9,3.1,Versicolor\n5.5,2.3,Versicolor\n6.5,2.8,Versicolor\n5.7,2.8,Versicolor\n6.3,3.3,Versicolor\n4.9,2.4,Versicolor\n6.6,2.9,Versicolor\n5.2,2.7,Versicolor",
-            description: "Setosa vs Versicolor iris flowers (sepal dimensions)",
-            negativeLabel: "Setosa",
-            positiveLabel: "Versicolor"
+            csvData: "Sepal Length,Sepal Width,Classification,Species\n5.1,3.5,-1,Setosa\n4.9,3.0,-1,Setosa\n4.7,3.2,-1,Setosa\n4.6,3.1,-1,Setosa\n5.0,3.6,-1,Setosa\n5.4,3.9,-1,Setosa\n4.6,3.4,-1,Setosa\n5.0,3.4,-1,Setosa\n4.4,2.9,-1,Setosa\n4.9,3.1,-1,Setosa\n7.0,3.2,1,Versicolor\n6.4,3.2,1,Versicolor\n6.9,3.1,1,Versicolor\n5.5,2.3,1,Versicolor\n6.5,2.8,1,Versicolor\n5.7,2.8,1,Versicolor\n6.3,3.3,1,Versicolor\n4.9,2.4,1,Versicolor\n6.6,2.9,1,Versicolor\n5.2,2.7,1,Versicolor",
+            description: "Setosa vs Versicolor iris flowers (sepal dimensions)"
         ),
         Dataset(
             name: "UIKit vs SwiftUI",
-            csvData: "Dev Time (hours),Bug Count,Framework\n8.5,2,UIKit\n12.0,1,UIKit\n15.2,3,UIKit\n18.7,2,UIKit\n22.1,4,UIKit\n25.3,3,UIKit\n28.9,5,UIKit\n32.4,4,UIKit\n35.8,6,UIKit\n40.2,5,UIKit\n3.2,8,SwiftUI\n4.1,12,SwiftUI\n2.8,15,SwiftUI\n5.3,18,SwiftUI\n3.9,22,SwiftUI\n4.7,25,SwiftUI\n2.4,28,SwiftUI\n5.8,32,SwiftUI\n3.6,35,SwiftUI\n4.2,38,SwiftUI",
-            description: "Development time (hours) vs bugs: UIKit (slower, fewer bugs) vs SwiftUI (faster, more bugs)",
-            negativeLabel: "UIKit",
-            positiveLabel: "SwiftUI"
+            csvData: "Dev Time (hours),Bug Count,Classification,Framework\n8.5,2,1,UIKit\n12.0,1,1,UIKit\n15.2,3,1,UIKit\n18.7,2,1,UIKit\n22.1,4,1,UIKit\n25.3,3,1,UIKit\n28.9,5,1,UIKit\n32.4,4,1,UIKit\n35.8,6,1,UIKit\n40.2,5,1,UIKit\n3.2,8,-1,SwiftUI\n4.1,12,-1,SwiftUI\n2.8,15,-1,SwiftUI\n5.3,18,-1,SwiftUI\n3.9,22,-1,SwiftUI\n4.7,25,-1,SwiftUI\n2.4,28,-1,SwiftUI\n5.8,32,-1,SwiftUI\n3.6,35,-1,SwiftUI\n4.2,38,-1,SwiftUI",
+            description: "Development time (hours) vs bugs: UIKit (slower, fewer bugs) vs SwiftUI (faster, more bugs)"
         )
     ]
     
@@ -79,88 +69,56 @@ class PerceptronModel {
         var newDataPoints: [DataPoint] = []
         var startIndex = 0
         
-        // Check if first line contains headers (non-numeric first column)
+        // Check if first line contains headers (non-numeric first column)  
         let firstLineComponents = lines[0].components(separatedBy: ",")
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
         
-        if firstLineComponents.count >= 3 && Double(firstLineComponents[0]) == nil {
+        if firstLineComponents.count >= 4 && Double(firstLineComponents[0]) == nil {
             // First line contains headers
             xAxisLabel = firstLineComponents[0]
-            yAxisLabel = firstLineComponents[1]
+            yAxisLabel = firstLineComponents[1] 
             outputLabel = firstLineComponents[2]
             startIndex = 1
         } else {
             // No headers, use defaults
             xAxisLabel = "X1"
             yAxisLabel = "X2"
-            outputLabel = "Output"
+            outputLabel = "Classification"
             startIndex = 0
         }
         
-        // First pass: collect all unique labels to establish mapping
-        var uniqueLabels: [String] = []
-        var originalLabels: [String] = [] // Keep original casing
-        var labelMapping: [String: Int] = [:]
+        // Track display labels for -1 and +1
+        var negativeLabel: String? = nil
+        var positiveLabel: String? = nil
         
+        // Parse data rows: x1, x2, classification, label
         for i in startIndex..<lines.count {
             let components = lines[i].components(separatedBy: ",")
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             
-            guard components.count >= 3,
-                  Double(components[0]) != nil,
-                  Double(components[1]) != nil else {
-                continue
-            }
-            
-            let originalLabel = components[2]
-            let labelString = originalLabel.lowercased()
-            if !uniqueLabels.contains(labelString) {
-                uniqueLabels.append(labelString)
-                originalLabels.append(originalLabel)
-            }
-        }
-        
-        // Ensure exactly two unique labels
-        guard uniqueLabels.count == 2 else {
-            dataPoints = []
-            return
-        }
-        
-        // Special case for true/false
-        if uniqueLabels.contains("true") && uniqueLabels.contains("false") {
-            labelMapping["false"] = -1
-            labelMapping["true"] = 1
-            // Set display labels preserving original case
-            let falseIndex = uniqueLabels.firstIndex(of: "false") ?? 0
-            let trueIndex = uniqueLabels.firstIndex(of: "true") ?? 1
-            negativeDisplayLabel = originalLabels[falseIndex]
-            positiveDisplayLabel = originalLabels[trueIndex]
-        } else {
-            // First encountered label = -1, second = +1
-            labelMapping[uniqueLabels[0]] = -1
-            labelMapping[uniqueLabels[1]] = 1
-            negativeDisplayLabel = originalLabels[0]
-            positiveDisplayLabel = originalLabels[1]
-        }
-        
-        // Second pass: parse data with label mapping
-        for i in startIndex..<lines.count {
-            let components = lines[i].components(separatedBy: ",")
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            
-            guard components.count >= 3,
+            guard components.count >= 4,
                   let x = Double(components[0]),
-                  let y = Double(components[1]) else {
+                  let y = Double(components[1]),
+                  let classification = Int(components[2]) else {
                 continue
             }
             
-            let labelString = components[2].lowercased()
-            guard let numericLabel = labelMapping[labelString] else {
-                continue
+            let displayLabel = components[3]
+            
+            // Store display labels
+            if classification == -1 && negativeLabel == nil {
+                negativeLabel = displayLabel
+            }
+            if classification == 1 && positiveLabel == nil {
+                positiveLabel = displayLabel
             }
             
-            newDataPoints.append(DataPoint(x: x, y: y, label: numericLabel))
+            newDataPoints.append(DataPoint(x: x, y: y, label: classification))
         }
+        
+        // Update display labels
+        negativeDisplayLabel = negativeLabel ?? "FALSE"
+        positiveDisplayLabel = positiveLabel ?? "TRUE"
         
         dataPoints = newDataPoints
         updateChartScale()
@@ -217,9 +175,6 @@ class PerceptronModel {
         chartYRange = newYMin...newYMax
     }
     
-    var currentDataset: Dataset? {
-        datasets.first { $0.name == selectedDataset }
-    }
     
     func decisionBoundaryLine(in xRange: ClosedRange<Double>, yRange: ClosedRange<Double>) -> [(x: Double, y: Double)]? {
         guard w2 != 0 else { return nil }
@@ -258,5 +213,35 @@ class PerceptronModel {
         
         // Return the first two points
         return Array(uniquePoints.prefix(2))
+    }
+    
+    func classifyInput() -> String {
+        guard let x1 = Double(inputX1), let x2 = Double(inputX2) else {
+            return "Invalid input"
+        }
+        
+        let result = w1 * x1 + w2 * x2 + bias
+        let prediction = result >= 0 ? 1 : -1
+        
+        return prediction == -1 ? negativeDisplayLabel : positiveDisplayLabel
+    }
+    
+    func getClassificationColor() -> Color {
+        guard let x1 = Double(inputX1), let x2 = Double(inputX2) else {
+            return .primary
+        }
+        
+        let result = w1 * x1 + w2 * x2 + bias
+        let prediction = result >= 0 ? 1 : -1
+        
+        // Consistent with chart coloring: -1 = red, +1 = blue
+        return prediction == -1 ? .red : .blue
+    }
+    
+    var inputPoint: (x: Double, y: Double)? {
+        guard let x1 = Double(inputX1), let x2 = Double(inputX2) else {
+            return nil
+        }
+        return (x: x1, y: x2)
     }
 }
