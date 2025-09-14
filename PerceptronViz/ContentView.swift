@@ -353,10 +353,10 @@ struct ContentView: View {
                                 x: .value("Step", errorData.step),
                                 y: .value("Errors", errorData.errors)
                             )
-                            .foregroundStyle(errorData.wasError ? .orange : .red)
+                            .foregroundStyle(errorData.wasError ? .red : .green)
                             .symbolSize(errorData.wasError ? 60 : 30)
                         }
-                        .frame(height: 200)
+                        .frame(height: 280)
                         .chartXAxisLabel("Training Step")
                         .chartYAxisLabel("Total Errors")
                         .border(Color.gray.opacity(0.3), width: 1)
@@ -364,7 +364,14 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity)
                     
                     Divider()
-                        .frame(height: 200)
+                        .frame(height: 350)
+                    
+                    // Calculation Details
+                    stepCalculationDetails(for: model.trainingErrors.last)
+                        .frame(width: 500, height: 322)
+                    
+                    Divider()
+                        .frame(height: 350)
                     
                     // Training Controls
                     VStack(alignment: .leading, spacing: 16) {
@@ -445,5 +452,131 @@ struct ContentView: View {
             .padding(.vertical)
         }
         .background(Color.gray.opacity(0.05))
+    }
+    
+    @ViewBuilder
+    private func stepCalculationDetails(for step: TrainingError?) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(step != nil ? "Step \(step!.step) Calculation Details" : "Training Calculation Details")
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+            
+            if let step = step,
+               let point = step.currentPoint,
+               let prediction = step.prediction,
+               let actual = step.actualLabel {
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text("Training Point:")
+                            .font(.body)
+                            .fontWeight(.medium)
+                        Text("(\(String(format: "%.1f", point.x)), \(String(format: "%.1f", point.y))) → \(actual)")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    HStack {
+                        Text("Prediction:")
+                            .font(.body)
+                            .fontWeight(.medium)
+                        Text("\(prediction)")
+                            .font(.body)
+                            .foregroundColor(step.wasError ? .red : .green)
+                            .fontWeight(.bold)
+                        Text(step.wasError ? "(❌ Error)" : "(✅ Correct)")
+                            .font(.body)
+                            .foregroundColor(step.wasError ? .red : .green)
+                    }
+                    
+                    // Fixed height content area to prevent jumping
+                    VStack(alignment: .leading, spacing: 12) {
+                        if step.wasError,
+                           let oldWeights = step.oldWeights,
+                           let newWeights = step.newWeights,
+                           let lr = step.learningRate {
+                            
+                            Text("Weight Updates (Error = \(actual) - \(prediction) = \(actual - prediction))")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .foregroundColor(.red)
+                            
+                            VStack(alignment: .leading, spacing: 16) {
+                                let errorValue = Double(actual - prediction)
+                                
+                                // W1 calculation with labels
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text("W1:")
+                                            .font(.system(.title3, design: .monospaced))
+                                            .frame(width: 60, alignment: .leading)
+                                            .fontWeight(.medium)
+                                        Text("\(String(format: "%.2f", oldWeights.w1)) + (\(String(format: "%.2f", lr)) × \(errorValue, specifier: "%.0f") × \(String(format: "%.1f", point.x))) = \(String(format: "%.2f", newWeights.w1))")
+                                            .font(.system(.title3, design: .monospaced))
+                                    }
+                                    Text("     old     + (rate × err × inp)    = new")
+                                        .font(.system(.caption, design: .monospaced))
+                                        .foregroundColor(.orange)
+                                        .padding(.leading, 60)
+                                }
+                                
+                                // W2 calculation with labels
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text("W2:")
+                                            .font(.system(.title3, design: .monospaced))
+                                            .frame(width: 60, alignment: .leading)
+                                            .fontWeight(.medium)
+                                        Text("\(String(format: "%.2f", oldWeights.w2)) + (\(String(format: "%.2f", lr)) × \(errorValue, specifier: "%.0f") × \(String(format: "%.1f", point.y))) = \(String(format: "%.2f", newWeights.w2))")
+                                            .font(.system(.title3, design: .monospaced))
+                                    }
+                                    Text("     old     + (rate × err × inp)    = new")
+                                        .font(.system(.caption, design: .monospaced))
+                                        .foregroundColor(.orange)
+                                        .padding(.leading, 60)
+                                }
+                                
+                                // Bias calculation with labels
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text("Bias:")
+                                            .font(.system(.title3, design: .monospaced))
+                                            .frame(width: 60, alignment: .leading)
+                                            .fontWeight(.medium)
+                                        Text("\(String(format: "%.2f", oldWeights.bias)) + (\(String(format: "%.2f", lr)) × \(errorValue, specifier: "%.0f") × 1) = \(String(format: "%.2f", newWeights.bias))")
+                                            .font(.system(.title3, design: .monospaced))
+                                    }
+                                    Text("      old     + (rate × err × 1)     = new")
+                                        .font(.system(.caption, design: .monospaced))
+                                        .foregroundColor(.orange)
+                                        .padding(.leading, 60)
+                                }
+                            }
+                            .padding(.leading, 16)
+                        } else {
+                            VStack {
+                                Text("No weight updates needed - prediction was correct!")
+                                    .font(.body)
+                                    .foregroundColor(.green)
+                                    .italic()
+                                Spacer()
+                            }
+                            .frame(maxHeight: .infinity)
+                        }
+                    }
+                    .frame(maxHeight: .infinity)
+                }
+            } else {
+                Text("No training step data available yet")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .italic()
+            }
+        }
+        .padding(20)
+        .background(Color.gray.opacity(0.08))
+        .cornerRadius(12)
+        .padding(.top, 12)
     }
 }

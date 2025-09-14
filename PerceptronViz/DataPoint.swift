@@ -18,4 +18,10 @@ struct TrainingError: Identifiable {
     let step: Int
     let errors: Int
     let wasError: Bool
+    let currentPoint: DataPoint?
+    let prediction: Int?
+    let actualLabel: Int?
+    let oldWeights: (w1: Double, w2: Double, bias: Double)?
+    let newWeights: (w1: Double, w2: Double, bias: Double)?
+    let learningRate: Double?
 }

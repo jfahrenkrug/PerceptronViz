@@ -377,7 +377,11 @@ class PerceptronModel {
         let prediction = predict(x1: point.x, x2: point.y)
         let actual = point.label
         
+        // Store old weights for comparison
+        let oldWeights = (w1: w1, w2: w2, bias: bias)
+        
         var wasError = false
+        var newWeights = oldWeights
         
         // If prediction is wrong, update weights
         if prediction != actual {
@@ -388,6 +392,8 @@ class PerceptronModel {
             w1 += learningRate * error * point.x
             w2 += learningRate * error * point.y
             bias += learningRate * error
+            
+            newWeights = (w1: w1, w2: w2, bias: bias)
         }
         
         // Calculate current total errors across all data points
@@ -399,8 +405,18 @@ class PerceptronModel {
         currentStep += 1
         currentPointIndex += 1
         
-        // Record this step
-        trainingErrors.append(TrainingError(step: currentStep, errors: totalErrors, wasError: wasError))
+        // Record this step with detailed information
+        trainingErrors.append(TrainingError(
+            step: currentStep,
+            errors: totalErrors,
+            wasError: wasError,
+            currentPoint: point,
+            prediction: prediction,
+            actualLabel: actual,
+            oldWeights: oldWeights,
+            newWeights: newWeights,
+            learningRate: learningRate
+        ))
         
         // Stop if we've achieved perfect classification
         if totalErrors == 0 {
