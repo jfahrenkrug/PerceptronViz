@@ -41,9 +41,40 @@ class PerceptronModel {
     var currentEpoch: Int = 0
     var currentStep: Int = 0
     var trainingErrors: [TrainingError] = []
+    var epochErrors: [Int] = [] // Track total errors at end of each epoch
+
+    // Computed property for epoch-based chart data
+    var epochChartData: [(epoch: Int, errors: Int)] {
+        return epochErrors.enumerated().map { (index, errors) in
+            (epoch: index + 1, errors: errors)
+        }
+    }
     var learningRate: Double = 0.1
     var shuffledPoints: [DataPoint] = []
     var currentPointIndex: Int = 0
+    var epochHadErrors: Bool = false
+    var hasConverged: Bool = false
+    var currentEpochErrorCount: Int = 0 // Track errors as they occur during the epoch
+
+    // Progress tracking
+    var currentEpochStep: Int {
+        if currentPointIndex >= dataPoints.count {
+            return dataPoints.count // Cap at total steps when epoch is complete
+        }
+        return currentPointIndex + 1 // 1-indexed for display
+    }
+
+    var totalStepsInEpoch: Int {
+        return dataPoints.count
+    }
+
+    var epochProgressString: String {
+        if isTraining || currentEpoch > 0 {
+            return "Epoch \(currentEpoch + 1) - Step \(currentEpochStep)/\(totalStepsInEpoch)"
+        } else {
+            return "Ready to train"
+        }
+    }
     
     let datasets: [Dataset] = [
         Dataset(
@@ -323,8 +354,12 @@ class PerceptronModel {
         currentEpoch = 0
         currentStep = 0
         trainingErrors = []
+        epochErrors = []
         shuffledPoints = dataPoints.shuffled()
         currentPointIndex = 0
+        epochHadErrors = false
+        hasConverged = false
+        currentEpochErrorCount = 0
         continueTraining()
     }
     
@@ -354,6 +389,7 @@ class PerceptronModel {
             shuffledPoints = dataPoints.shuffled()
             currentPointIndex = 0
             currentEpoch = 0
+            epochHadErrors = false
         }
         performTrainingStep()
     }
@@ -361,54 +397,70 @@ class PerceptronModel {
     private func performTrainingStep() {
         // Check if we need to start a new epoch
         if currentPointIndex >= shuffledPoints.count {
+            // If we've converged and this is manual stepping, just cycle through points without training
+            if hasConverged && !isTraining {
+                // Reset to beginning of epoch for visualization, don't add chart points
+                currentPointIndex = 0
+                return
+            }
+
+            // Record the errors that occurred during this epoch
+            epochErrors.append(currentEpochErrorCount)
+
+            // Check for convergence: if previous epoch had no errors, we're done
+            if currentEpoch > 0 && !epochHadErrors {
+                hasConverged = true
+                isTraining = false
+                return
+            }
+
+            // Start new epoch
             currentEpoch += 1
             currentPointIndex = 0
             shuffledPoints = dataPoints.shuffled()
-            
+            epochHadErrors = false // Reset error flag for new epoch
+            currentEpochErrorCount = 0 // Reset error count for new epoch
+
             // Stop if we've reached max epochs
             if currentEpoch >= maxEpochs {
                 isTraining = false
                 return
             }
         }
-        
+
         // Get the current point to train on
         let point = shuffledPoints[currentPointIndex]
         let prediction = predict(x1: point.x, x2: point.y)
         let actual = point.label
-        
+
         // Store old weights for comparison
         let oldWeights = (w1: w1, w2: w2, bias: bias)
-        
+
         var wasError = false
         var newWeights = oldWeights
-        
+
         // If prediction is wrong, update weights
         if prediction != actual {
             wasError = true
-            
+            epochHadErrors = true // Mark that this epoch had at least one error
+            currentEpochErrorCount += 1 // Count this error for the epoch
+
             // Perceptron weight update rule
             let error = Double(actual - prediction)
             w1 += learningRate * error * point.x
             w2 += learningRate * error * point.y
             bias += learningRate * error
-            
+
             newWeights = (w1: w1, w2: w2, bias: bias)
         }
-        
-        // Calculate current total errors across all data points
-        let totalErrors = dataPoints.reduce(0) { count, dataPoint in
-            let pred = predict(x1: dataPoint.x, x2: dataPoint.y)
-            return count + (pred != dataPoint.label ? 1 : 0)
-        }
-        
+
         currentStep += 1
         currentPointIndex += 1
-        
-        // Record this step with detailed information
+
+        // Record this step with detailed information (errors field now represents: 1 = this point was misclassified, 0 = correct)
         trainingErrors.append(TrainingError(
             step: currentStep,
-            errors: totalErrors,
+            errors: wasError ? 1 : 0, // Individual point error, not total dataset errors
             wasError: wasError,
             currentPoint: point,
             prediction: prediction,
@@ -417,11 +469,6 @@ class PerceptronModel {
             newWeights: newWeights,
             learningRate: learningRate
         ))
-        
-        // Stop if we've achieved perfect classification
-        if totalErrors == 0 {
-            isTraining = false
-        }
     }
     
     func resetTraining() {
@@ -429,9 +476,13 @@ class PerceptronModel {
         currentEpoch = 0
         currentStep = 0
         currentPointIndex = 0
+        epochHadErrors = false
+        hasConverged = false
+        currentEpochErrorCount = 0
         trainingErrors = []
+        epochErrors = []
         shuffledPoints = []
-        
+
         // Reset to initial parameters based on dataset
         initializePerceptronParameters()
     }

@@ -340,26 +340,41 @@ struct ContentView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Training Progress")
                             .font(.headline)
-                        
-                        Chart(model.trainingErrors) { errorData in
+
+                        Chart(model.epochChartData, id: \.epoch) { data in
                             LineMark(
-                                x: .value("Step", errorData.step),
-                                y: .value("Errors", errorData.errors)
+                                x: .value("Epoch", data.epoch),
+                                y: .value("Errors", data.errors)
                             )
                             .foregroundStyle(.red)
                             .lineStyle(StrokeStyle(lineWidth: 2))
-                            
+
                             PointMark(
-                                x: .value("Step", errorData.step),
-                                y: .value("Errors", errorData.errors)
+                                x: .value("Epoch", data.epoch),
+                                y: .value("Errors", data.errors)
                             )
-                            .foregroundStyle(errorData.wasError ? .red : .green)
-                            .symbolSize(errorData.wasError ? 60 : 30)
+                            .foregroundStyle(data.errors == 0 ? .green : .red)
+                            .symbolSize(data.errors == 0 ? 80 : 60)
                         }
                         .frame(height: 280)
-                        .chartXAxisLabel("Training Step")
+                        .chartXAxisLabel("Epoch")
                         .chartYAxisLabel("Total Errors")
+                        .chartYScale(domain: .automatic(includesZero: true))
                         .border(Color.gray.opacity(0.3), width: 1)
+
+                        // Progress labels below chart
+                        HStack(spacing: 20) {
+                            Text(model.epochProgressString)
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .foregroundColor(.secondary)
+
+                            if let lastEpochErrors = model.epochErrors.last {
+                                Text("Last Epoch Errors: \(lastEpochErrors)")
+                                    .font(.body)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     
@@ -443,12 +458,10 @@ struct ContentView: View {
                         }
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Epoch: \(model.currentEpoch)")
-                                .font(.body)
-                            Text("Step: \(model.currentStep)")
-                                .font(.body)
-                            Text("Total Errors: \(model.trainingErrors.last?.errors ?? 0)")
-                                .font(.body)
+                            if model.isTraining {
+                                Text("Current Point: \(model.trainingErrors.last?.wasError == true ? "❌" : "✅")")
+                                    .font(.body)
+                            }
                         }
                         .foregroundColor(.secondary)
                     }
