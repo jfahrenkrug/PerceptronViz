@@ -329,17 +329,6 @@ struct ContentView: View {
             Divider()
 
             VStack(spacing: 8) {
-                HStack {
-                    Text("Training")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-
-                    Spacer()
-                }
-                .padding(.horizontal)
-
                 HStack(alignment: .top, spacing: 16) {
                     // Training Chart
                     VStack(alignment: .leading, spacing: 8) {
@@ -535,7 +524,7 @@ struct ContentView: View {
                                 .fontWeight(.medium)
                                 .foregroundColor(.red)
                             
-                            VStack(alignment: .leading, spacing: 16) {
+                            VStack(alignment: .leading, spacing: 10) {
                                 let errorValue = Double(actual - prediction)
                                 
                                 // W1 calculation with labels
@@ -623,7 +612,9 @@ struct ContentView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(20)
+        .padding(.horizontal, 20)
+        .padding(.top, 20)
+        .padding(.bottom, 8)
         .background(Color.gray.opacity(0.08))
         .cornerRadius(12)
     }
