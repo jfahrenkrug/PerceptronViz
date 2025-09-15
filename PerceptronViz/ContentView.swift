@@ -11,7 +11,7 @@ struct ContentView: View {
                 rightPanel
             }
             .padding()
-            .frame(minWidth: 1000, maxWidth: .infinity, minHeight: 600, maxHeight: .infinity)
+            .frame(minWidth: 1000, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
             
             if model.showTrainingArea {
                 trainingArea
@@ -30,7 +30,7 @@ struct ContentView: View {
             TextEditor(text: $model.csvText)
                 .font(.system(.body, design: .monospaced))
                 .border(Color.gray, width: 1)
-                .frame(minHeight: 250)
+                .frame(minHeight: 150)
             
             Text("Format: x1,x2,label")
                 .font(.caption)
@@ -69,26 +69,23 @@ struct ContentView: View {
     }
     
     private var rightPanel: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Perceptron Visualization")
-                    .font(.headline)
-                
-                chartView
-                
-                legendView
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-            VStack(alignment: .leading, spacing: 0) {
-                Divider()
-                    .padding(.vertical, 8)
-                
-                controlsView
-                    .padding(.bottom, 8)
-            }
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Perceptron Visualization")
+                .font(.headline)
+
+            chartView
+
+            legendView
+
+            Divider()
+                .padding(.vertical, 8)
+
+            controlsView
+                .padding(.bottom, 8)
+
+            Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
     }
     
     private var chartView: some View {
@@ -132,7 +129,7 @@ struct ContentView: View {
         .chartYScale(domain: model.chartYRange)
         .chartXAxisLabel(model.xAxisLabel)
         .chartYAxisLabel(model.yAxisLabel)
-        .frame(minHeight: 300)
+        .frame(minHeight: 120)
         .border(Color.gray, width: 1)
         .clipped()
         .onTapGesture(count: 2) {
@@ -181,92 +178,98 @@ struct ContentView: View {
             
             // Vertical divider
             Divider()
-                .frame(height: 200)
+                .frame(height: 80)
             
             // Right side: Test Classification
             VStack(alignment: .leading, spacing: 16) {
                 Text("Test Classification")
                     .font(.title3)
                     .fontWeight(.medium)
-                
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("\(model.xAxisLabel):")
-                            .font(.body)
-                        HStack(spacing: 4) {
-                            TextField("Enter \(model.xAxisLabel)", text: $model.inputX1)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 100)
-                                .font(.title2)
-                            
-                            Button("-") {
-                                if let current = Double(model.inputX1) {
-                                    model.inputX1 = String(format: "%.1f", current - 0.5)
+
+                HStack(alignment: .top, spacing: 20) {
+                    // Left side: Input fields
+                    VStack(alignment: .leading, spacing: 16) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("\(model.xAxisLabel):")
+                                .font(.body)
+                            HStack(spacing: 4) {
+                                TextField("Enter \(model.xAxisLabel)", text: $model.inputX1)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 100)
+                                    .font(.title2)
+
+                                Button("-") {
+                                    if let current = Double(model.inputX1) {
+                                        model.inputX1 = String(format: "%.1f", current - 0.5)
+                                    }
                                 }
-                            }
-                            .buttonStyle(.bordered)
-                            .frame(width: 30, height: 34)
-                            
-                            Button("+") {
-                                if let current = Double(model.inputX1) {
-                                    model.inputX1 = String(format: "%.1f", current + 0.5)
+                                .buttonStyle(.bordered)
+                                .frame(width: 30, height: 34)
+
+                                Button("+") {
+                                    if let current = Double(model.inputX1) {
+                                        model.inputX1 = String(format: "%.1f", current + 0.5)
+                                    }
                                 }
+                                .buttonStyle(.bordered)
+                                .frame(width: 30, height: 34)
                             }
-                            .buttonStyle(.bordered)
-                            .frame(width: 30, height: 34)
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("\(model.yAxisLabel):")
+                                .font(.body)
+                            HStack(spacing: 4) {
+                                TextField("Enter \(model.yAxisLabel)", text: $model.inputX2)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 100)
+                                    .font(.title2)
+
+                                Button("-") {
+                                    if let current = Double(model.inputX2) {
+                                        model.inputX2 = String(format: "%.1f", current - 0.5)
+                                    }
+                                }
+                                .buttonStyle(.bordered)
+                                .frame(width: 30, height: 34)
+
+                                Button("+") {
+                                    if let current = Double(model.inputX2) {
+                                        model.inputX2 = String(format: "%.1f", current + 0.5)
+                                    }
+                                }
+                                .buttonStyle(.bordered)
+                                .frame(width: 30, height: 34)
+                            }
                         }
                     }
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("\(model.yAxisLabel):")
-                            .font(.body)
-                        HStack(spacing: 4) {
-                            TextField("Enter \(model.yAxisLabel)", text: $model.inputX2)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 100)
-                                .font(.title2)
-                            
-                            Button("-") {
-                                if let current = Double(model.inputX2) {
-                                    model.inputX2 = String(format: "%.1f", current - 0.5)
-                                }
-                            }
-                            .buttonStyle(.bordered)
-                            .frame(width: 30, height: 34)
-                            
-                            Button("+") {
-                                if let current = Double(model.inputX2) {
-                                    model.inputX2 = String(format: "%.1f", current + 0.5)
-                                }
-                            }
-                            .buttonStyle(.bordered)
-                            .frame(width: 30, height: 34)
+
+                    // Right side: Calculation and Prediction
+                    VStack(alignment: .leading, spacing: 16) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Calculation:")
+                                .font(.body)
+                            Text(model.getCalculationDisplay())
+                                .font(.system(.body, design: .monospaced))
+                                .foregroundColor(.secondary)
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 10)
+                                .background(Color.gray.opacity(0.05))
+                                .cornerRadius(6)
                         }
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Calculation:")
-                            .font(.body)
-                        Text(model.getCalculationDisplay())
-                            .font(.system(.title3, design: .monospaced))
-                            .foregroundColor(.secondary)
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 10)
-                            .background(Color.gray.opacity(0.05))
-                            .cornerRadius(6)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Prediction:")
-                            .font(.body)
-                        Text(model.classifyInput())
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundColor(model.getClassificationColor())
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 12)
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(8)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Prediction:")
+                                .font(.body)
+                            Text(model.classifyInput())
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(model.getClassificationColor())
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 12)
+                                .background(Color.gray.opacity(0.1))
+                                .cornerRadius(8)
+                        }
                     }
                 }
             }
@@ -324,22 +327,25 @@ struct ContentView: View {
     private var trainingArea: some View {
         VStack(spacing: 0) {
             Divider()
-            
-            VStack(spacing: 16) {
+
+            VStack(spacing: 8) {
                 HStack {
                     Text("Training")
                         .font(.title2)
                         .fontWeight(.medium)
-                    
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+
                     Spacer()
                 }
                 .padding(.horizontal)
-                
-                HStack(alignment: .top, spacing: 24) {
+
+                HStack(alignment: .top, spacing: 16) {
                     // Training Chart
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Training Progress")
                             .font(.headline)
+                            .lineLimit(1)
 
                         Chart(model.epochChartData, id: \.epoch) { data in
                             LineMark(
@@ -356,121 +362,128 @@ struct ContentView: View {
                             .foregroundStyle(data.errors == 0 ? .green : .red)
                             .symbolSize(data.errors == 0 ? 80 : 60)
                         }
-                        .frame(height: 280)
+                        .frame(minHeight: 80, maxHeight: 120)
                         .chartXAxisLabel("Epoch")
                         .chartYAxisLabel("Total Errors")
                         .chartYScale(domain: .automatic(includesZero: true))
                         .border(Color.gray.opacity(0.3), width: 1)
 
                         // Progress labels below chart
-                        HStack(spacing: 20) {
+                        VStack(alignment: .leading, spacing: 2) {
                             Text(model.epochProgressString)
-                                .font(.body)
+                                .font(.caption)
                                 .fontWeight(.medium)
                                 .foregroundColor(.secondary)
+                                .lineLimit(1)
 
                             if let lastEpochErrors = model.epochErrors.last {
                                 Text("Last Epoch Errors: \(lastEpochErrors)")
-                                    .font(.body)
+                                    .font(.caption)
                                     .foregroundColor(.secondary)
+                                    .lineLimit(1)
                             }
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    
+
                     Divider()
-                        .frame(height: 350)
-                    
+
                     // Data Points Table
                     dataPointsTable()
-                        .frame(width: 200, height: 322)
-                    
+                        .frame(width: 200)
+                        .frame(maxHeight: .infinity)
+
                     Divider()
-                        .frame(height: 350)
-                    
+
                     // Calculation Details
                     stepCalculationDetails(for: model.trainingErrors.last)
-                        .frame(width: 500, height: 322)
-                    
+                        .frame(width: 500)
+                        .frame(maxHeight: .infinity)
+
                     Divider()
-                        .frame(height: 350)
                     
                     // Training Controls
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Training Controls")
                             .font(.headline)
-                        
-                        VStack(alignment: .leading, spacing: 12) {
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text("Max Epochs: \(model.maxEpochs)")
-                                    .font(.body)
-                                Slider(value: Binding(
-                                    get: { Double(model.maxEpochs) },
-                                    set: { model.maxEpochs = Int($0) }
-                                ), in: 10...500, step: 10)
-                                .frame(width: 200)
-                                .disabled(model.isTraining)
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text("Pause: \(model.pauseDuration, specifier: "%.1f")s")
-                                    .font(.body)
-                                Slider(value: $model.pauseDuration, in: 0.1...2.0, step: 0.1)
+                            .lineLimit(1)
+
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 8) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Max Epochs: \(model.maxEpochs)")
+                                        .font(.caption)
+                                    Slider(value: Binding(
+                                        get: { Double(model.maxEpochs) },
+                                        set: { model.maxEpochs = Int($0) }
+                                    ), in: 10...500, step: 10)
                                     .frame(width: 200)
                                     .disabled(model.isTraining)
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text("Learning Rate: \(model.learningRate, specifier: "%.2f")")
-                                    .font(.body)
-                                Slider(value: $model.learningRate, in: 0.01...1.0, step: 0.01)
-                                    .frame(width: 200)
+                                }
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Pause: \(model.pauseDuration, specifier: "%.1f")s")
+                                        .font(.caption)
+                                    Slider(value: $model.pauseDuration, in: 0.1...2.0, step: 0.1)
+                                        .frame(width: 200)
+                                        .disabled(model.isTraining)
+                                }
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Learning Rate: \(model.learningRate, specifier: "%.2f")")
+                                        .font(.caption)
+                                    Slider(value: $model.learningRate, in: 0.01...1.0, step: 0.01)
+                                        .frame(width: 200)
+                                        .disabled(model.isTraining)
+                                }
+
+                                HStack(spacing: 8) {
+                                    if model.isTraining {
+                                        Button("Stop Training") {
+                                            model.stopTraining()
+                                        }
+                                        .buttonStyle(.borderedProminent)
+                                        .tint(.red)
+                                        .font(.caption)
+                                    } else {
+                                        Button("Start Training") {
+                                            model.startTraining()
+                                        }
+                                        .buttonStyle(.borderedProminent)
+                                        .disabled(model.dataPoints.isEmpty)
+                                        .font(.caption)
+
+                                        Button("Step") {
+                                            model.stepTraining()
+                                        }
+                                        .buttonStyle(.bordered)
+                                        .disabled(model.dataPoints.isEmpty)
+                                        .font(.caption)
+                                    }
+
+                                    Button("Reset") {
+                                        model.resetTraining()
+                                    }
+                                    .buttonStyle(.bordered)
                                     .disabled(model.isTraining)
+                                    .font(.caption)
+                                }
+
+                                if model.isTraining {
+                                    Text("Current Point: \(model.trainingErrors.last?.wasError == true ? "❌" : "✅")")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
                             }
                         }
-                        
-                        HStack(spacing: 12) {
-                            if model.isTraining {
-                                Button("Stop Training") {
-                                    model.stopTraining()
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.red)
-                            } else {
-                                Button("Start Training") {
-                                    model.startTraining()
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .disabled(model.dataPoints.isEmpty)
-                                
-                                Button("Step") {
-                                    model.stepTraining()
-                                }
-                                .buttonStyle(.bordered)
-                                .disabled(model.dataPoints.isEmpty)
-                            }
-                            
-                            Button("Reset") {
-                                model.resetTraining()
-                            }
-                            .buttonStyle(.bordered)
-                            .disabled(model.isTraining)
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            if model.isTraining {
-                                Text("Current Point: \(model.trainingErrors.last?.wasError == true ? "❌" : "✅")")
-                                    .font(.body)
-                            }
-                        }
-                        .foregroundColor(.secondary)
                     }
                     .frame(width: 250)
                 }
                 .padding(.horizontal)
             }
-            .padding(.vertical)
+            .padding(.vertical, 8)
         }
+        .frame(maxHeight: 300)
         .background(Color.gray.opacity(0.05))
     }
     
