@@ -53,12 +53,15 @@ This is a SwiftUI macOS application that demonstrates perceptron binary classifi
 
 ### Training Implementation
 
-The training algorithm implements the perceptron learning rule:
-- Shuffles data points each epoch for better convergence
-- Tracks detailed step information including old/new weights
-- Supports configurable learning rate, max epochs, and pause duration
-- Visual progress tracking with error count charts
-- Step-by-step mode and continuous training modes
+The training algorithm implements proper epoch-based perceptron learning:
+- **Epoch-based convergence**: Training only stops after completing full epochs with zero errors
+- **Real-time error tracking**: Uses `currentEpochErrorCount` and `epochHadErrors` flags for accurate progress
+- **Dual training modes**: Automatic continuous training and manual step-by-step with identical behavior
+- **Convergence protection**: `hasConverged` flag prevents chart updates after training completion
+- **Progress visualization**: Shows "Epoch X - Step Y/Z" format with epoch-level error charts
+- **Weight update timing**: Calculates errors before weight updates to prevent artificial error spikes
+- **Data shuffling**: Randomizes order each epoch while maintaining deterministic step-by-step replay
+- **Educational display**: Tracks detailed step information including old/new weights and calculations
 
 ### Development Notes
 
@@ -75,6 +78,14 @@ The training algorithm implements the perceptron learning rule:
 - Built-in datasets demonstrate different classification scenarios
 
 **UI Layout Constraints**
-- Training area: Chart (maxWidth: .infinity) | Table (200px) | Details (500px) | Controls (250px)  
+- Training area: Chart (maxWidth: .infinity) | Table (200px) | Details (500px) | Controls (250px)
 - Fixed heights (280px chart, 322px details/table) prevent layout jumping
+- Progress labels positioned below chart in horizontal layout for better readability
 - Monospaced fonts ensure proper alignment in mathematical expressions
+
+**Training Algorithm Correctness**
+- **Critical Bug Fixes Applied**: Fixed epoch completion logic, error calculation timing, and manual/auto mode consistency
+- **Epoch-based Learning**: Proper ML training pattern where convergence is only checked after full epoch completion
+- **Error Calculation**: Errors counted during epoch processing, not recalculated afterward to prevent meaningless epoch concept
+- **Chart Synchronization**: Training progress chart updates only at epoch boundaries, showing meaningful error reduction trends
+- **Manual Stepping Consistency**: Manual step button produces identical results to automatic training, including post-convergence behavior
