@@ -2,6 +2,8 @@
 
 A SwiftUI macOS application that demonstrates how a perceptron works for binary classification. Perfect for educational purposes and conference demos!
 
+Note: The initial version of this app was entirely vibe coded using Claude Code. I didn't write a single line of code by hand.
+
 ## Features
 
 ### 🎯 Interactive Perceptron Visualization

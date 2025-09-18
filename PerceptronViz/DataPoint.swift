@@ -1,3 +1,11 @@
+//
+//  DataPoint.swift
+//  PerceptronViz
+//
+//  Created by Johannes Fahrenkrug on 18.09.25.
+//  https://springenwerk.com
+//
+
 import Foundation
 
 struct DataPoint: Identifiable, Hashable {
