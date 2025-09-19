@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 
+/// Describes a built-in dataset option available to the perceptron visualizer.
 struct Dataset {
     let name: String
     let csvData: String
@@ -16,6 +17,7 @@ struct Dataset {
 }
 
 @Observable @MainActor
+/// Serves as the single source of truth for data, training state, and predictions.
 class PerceptronModel {
     var selectedDataset = "AND Gate"
     var csvText: String = "Input1,Input2,Classification,Label\n0,0,-1,False\n0,1,-1,False\n1,0,-1,False\n1,1,1,True"
