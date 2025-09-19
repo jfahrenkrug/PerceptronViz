@@ -4,6 +4,8 @@ A SwiftUI macOS application that demonstrates how a perceptron works for binary 
 
 Note: The initial version of this app was entirely vibe coded using Claude Code. I didn't write a single line of code by hand.
 
+![PerceptronViz screenshot](PerceptronVizScreenshot.png)
+
 ## Features
 
 ### 🎯 Interactive Perceptron Visualization
