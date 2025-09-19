@@ -9,6 +9,7 @@
 import SwiftUI
 
 @main
+/// Application entry point for the Perceptron visualization demo.
 struct PerceptronVizApp: App {
     var body: some Scene {
         WindowGroup {

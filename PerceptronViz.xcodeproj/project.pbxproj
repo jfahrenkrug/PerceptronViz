@@ -13,6 +13,17 @@
 		A9A1A1A82C93456800000001 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9A1A1A72C93456800000001 /* Preview Assets.xcassets */; };
 		A9A1A1AF2C93457700000001 /* DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A1A1AE2C93457700000001 /* DataPoint.swift */; };
 		A9A1A1B12C93457F00000001 /* PerceptronModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A1A1B02C93457F00000001 /* PerceptronModel.swift */; };
+		D6DFBC4B13CC48BFBABD3D1E22588B40 /* ClassificationLegendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CDCA7A065541848D9E18100FB6878E /* ClassificationLegendView.swift */; };
+		7BDE42FDBD9C4E2D994B87E7B020E733 /* PerceptronChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C7838E8744E67B0FC75ACF3398E3A /* PerceptronChartView.swift */; };
+		32EAC5BBDCCC47478AB8817720035E03 /* PerceptronControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6FF48E856B4E668A53767BAA38B2FE /* PerceptronControlsView.swift */; };
+		366CD50954CB458BB236099CAB50B21A /* TrainingDataEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0698C76745C2413896A8C78E449C8DD3 /* TrainingDataEditorView.swift */; };
+		31589E98DF6A44D08778871521CE8D4F /* VisualizationPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4774C947A4C4543A46895F077F1903F /* VisualizationPanelView.swift */; };
+		9D62E7300C0B431BAAAFAF003E1A6F9D /* TrainingAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AD0017270A4BDAA327D1B6A88A7E7A /* TrainingAreaView.swift */; };
+		580553AE9F2443D18CF348FE8D2FC80B /* TrainingProgressChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6DC5409BA9A4585B6F6FDA2A22A263A /* TrainingProgressChartView.swift */; };
+		4EE4EC4F21264A55A08FC0447BC1A64B /* TrainingDataTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDBA1A37F9045C99EDA34B89F600117 /* TrainingDataTableView.swift */; };
+		262CD09287D9459381988A66D81DFC34 /* StepCalculationDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26387955DC234CEFBED41D8133D5772A /* StepCalculationDetailsView.swift */; };
+		4D79A5B22BEB4EE49E1D3074D1521148 /* TrainingControlsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87FD04D5D2F49E58D34D6BF0C3A272B /* TrainingControlsPanel.swift */; };
+		46196030253F413C899112C2FA2F3CA4 /* SafeCollectionAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B86679C3C4F58A949578BB54BDA64 /* SafeCollectionAccess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +35,17 @@
 		A9A1A1A92C93456800000001 /* PerceptronViz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PerceptronViz.entitlements; sourceTree = "<group>"; };
 		A9A1A1AE2C93457700000001 /* DataPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPoint.swift; sourceTree = "<group>"; };
 		A9A1A1B02C93457F00000001 /* PerceptronModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptronModel.swift; sourceTree = "<group>"; };
+		16CDCA7A065541848D9E18100FB6878E /* ClassificationLegendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationLegendView.swift; sourceTree = "<group>"; };
+		BC7C7838E8744E67B0FC75ACF3398E3A /* PerceptronChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptronChartView.swift; sourceTree = "<group>"; };
+		0A6FF48E856B4E668A53767BAA38B2FE /* PerceptronControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptronControlsView.swift; sourceTree = "<group>"; };
+		0698C76745C2413896A8C78E449C8DD3 /* TrainingDataEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingDataEditorView.swift; sourceTree = "<group>"; };
+		E4774C947A4C4543A46895F077F1903F /* VisualizationPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualizationPanelView.swift; sourceTree = "<group>"; };
+		A7AD0017270A4BDAA327D1B6A88A7E7A /* TrainingAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingAreaView.swift; sourceTree = "<group>"; };
+		D6DC5409BA9A4585B6F6FDA2A22A263A /* TrainingProgressChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgressChartView.swift; sourceTree = "<group>"; };
+		FFDBA1A37F9045C99EDA34B89F600117 /* TrainingDataTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingDataTableView.swift; sourceTree = "<group>"; };
+		26387955DC234CEFBED41D8133D5772A /* StepCalculationDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepCalculationDetailsView.swift; sourceTree = "<group>"; };
+		D87FD04D5D2F49E58D34D6BF0C3A272B /* TrainingControlsPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingControlsPanel.swift; sourceTree = "<group>"; };
+		423B86679C3C4F58A949578BB54BDA64 /* SafeCollectionAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeCollectionAccess.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +79,8 @@
 			isa = PBXGroup;
 			children = (
 				A9A1A1A02C93456700000001 /* PerceptronVizApp.swift */,
-				A9A1A1A22C93456700000001 /* ContentView.swift */,
+				4603A5A54BD94DF9B14B8F01892444F6 /* Views */,
+				423B86679C3C4F58A949578BB54BDA64 /* SafeCollectionAccess.swift */,
 				A9A1A1AE2C93457700000001 /* DataPoint.swift */,
 				A9A1A1B02C93457F00000001 /* PerceptronModel.swift */,
 				A9A1A1A42C93456800000001 /* Assets.xcassets */,
@@ -65,6 +88,24 @@
 				A9A1A1A62C93456800000001 /* Preview Content */,
 			);
 			path = PerceptronViz;
+			sourceTree = "<group>";
+		};
+		4603A5A54BD94DF9B14B8F01892444F6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A9A1A1A22C93456700000001 /* ContentView.swift */,
+				0698C76745C2413896A8C78E449C8DD3 /* TrainingDataEditorView.swift */,
+				E4774C947A4C4543A46895F077F1903F /* VisualizationPanelView.swift */,
+				BC7C7838E8744E67B0FC75ACF3398E3A /* PerceptronChartView.swift */,
+				16CDCA7A065541848D9E18100FB6878E /* ClassificationLegendView.swift */,
+				0A6FF48E856B4E668A53767BAA38B2FE /* PerceptronControlsView.swift */,
+				A7AD0017270A4BDAA327D1B6A88A7E7A /* TrainingAreaView.swift */,
+				D6DC5409BA9A4585B6F6FDA2A22A263A /* TrainingProgressChartView.swift */,
+				FFDBA1A37F9045C99EDA34B89F600117 /* TrainingDataTableView.swift */,
+				26387955DC234CEFBED41D8133D5772A /* StepCalculationDetailsView.swift */,
+				D87FD04D5D2F49E58D34D6BF0C3A272B /* TrainingControlsPanel.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		A9A1A1A62C93456800000001 /* Preview Content */ = {
@@ -146,6 +187,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46196030253F413C899112C2FA2F3CA4 /* SafeCollectionAccess.swift in Sources */,
+				7BDE42FDBD9C4E2D994B87E7B020E733 /* PerceptronChartView.swift in Sources */,
+				4EE4EC4F21264A55A08FC0447BC1A64B /* TrainingDataTableView.swift in Sources */,
+				366CD50954CB458BB236099CAB50B21A /* TrainingDataEditorView.swift in Sources */,
+				4D79A5B22BEB4EE49E1D3074D1521148 /* TrainingControlsPanel.swift in Sources */,
+				580553AE9F2443D18CF348FE8D2FC80B /* TrainingProgressChartView.swift in Sources */,
+				D6DFBC4B13CC48BFBABD3D1E22588B40 /* ClassificationLegendView.swift in Sources */,
+				32EAC5BBDCCC47478AB8817720035E03 /* PerceptronControlsView.swift in Sources */,
+				262CD09287D9459381988A66D81DFC34 /* StepCalculationDetailsView.swift in Sources */,
+				31589E98DF6A44D08778871521CE8D4F /* VisualizationPanelView.swift in Sources */,
+				9D62E7300C0B431BAAAFAF003E1A6F9D /* TrainingAreaView.swift in Sources */,
 				A9A1A1A32C93456700000001 /* ContentView.swift in Sources */,
 				A9A1A1AF2C93457700000001 /* DataPoint.swift in Sources */,
 				A9A1A1B12C93457F00000001 /* PerceptronModel.swift in Sources */,

@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Represents a single training example with coordinates and classification label.
 struct DataPoint: Identifiable, Hashable {
     let id = UUID()
     let x: Double
@@ -21,6 +22,7 @@ struct DataPoint: Identifiable, Hashable {
     }
 }
 
+/// Captures the outcome and calculations for one perceptron training step.
 struct TrainingError: Identifiable {
     let id = UUID()
     let step: Int
