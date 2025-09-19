@@ -24,6 +24,7 @@
 		262CD09287D9459381988A66D81DFC34 /* StepCalculationDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26387955DC234CEFBED41D8133D5772A /* StepCalculationDetailsView.swift */; };
 		4D79A5B22BEB4EE49E1D3074D1521148 /* TrainingControlsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87FD04D5D2F49E58D34D6BF0C3A272B /* TrainingControlsPanel.swift */; };
 		46196030253F413C899112C2FA2F3CA4 /* SafeCollectionAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B86679C3C4F58A949578BB54BDA64 /* SafeCollectionAccess.swift */; };
+		09CD7240E30E432E806B785C9B72DF78 /* PerceptronModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B066209898F742159039F28057D3C5FC /* PerceptronModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,10 +47,19 @@
 		26387955DC234CEFBED41D8133D5772A /* StepCalculationDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepCalculationDetailsView.swift; sourceTree = "<group>"; };
 		D87FD04D5D2F49E58D34D6BF0C3A272B /* TrainingControlsPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingControlsPanel.swift; sourceTree = "<group>"; };
 		423B86679C3C4F58A949578BB54BDA64 /* SafeCollectionAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeCollectionAccess.swift; sourceTree = "<group>"; };
+		B066209898F742159039F28057D3C5FC /* PerceptronModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptronModelTests.swift; sourceTree = "<group>"; };
+		E6BEDE0375B64A368E8559F30BA908A3 /* PerceptronVizTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PerceptronVizTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A9A1A19A2C93456700000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B797B1A784D54CF4A8E409833F799E10 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -64,6 +74,7 @@
 			children = (
 				A9A1A19F2C93456700000001 /* PerceptronViz */,
 				A9A1A19E2C93456700000001 /* Products */,
+				EAEAEEF8F0C94479928076F04AD71BE1 /* PerceptronVizTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				A9A1A19D2C93456700000001 /* PerceptronViz.app */,
+				E6BEDE0375B64A368E8559F30BA908A3 /* PerceptronVizTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -116,9 +128,35 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		EAEAEEF8F0C94479928076F04AD71BE1 /* PerceptronVizTests */ = {
+			isa = PBXGroup;
+			children = (
+				B066209898F742159039F28057D3C5FC /* PerceptronModelTests.swift */,
+			);
+			path = PerceptronVizTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1CA0244A671A4F7EA72949C07064130A /* PerceptronVizTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9344C9A21694444E8D116AD799928D1A /* Build configuration list for PBXNativeTarget "PerceptronVizTests" */;
+			buildPhases = (
+				D3B357BB83744401B72D0C89851D2C6B /* Sources */,
+				B797B1A784D54CF4A8E409833F799E10 /* Frameworks */,
+				D5CDD3108DA3471F881DFAA9A24B36B4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCBC328DA97041C79F26F211863C03F6 /* PBXTargetDependency */,
+			);
+			name = PerceptronVizTests;
+			productName = PerceptronVizTests;
+			productReference = E6BEDE0375B64A368E8559F30BA908A3 /* PerceptronVizTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A9A1A19C2C93456700000001 /* PerceptronViz */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A9A1A1AC2C93456800000001 /* Build configuration list for PBXNativeTarget "PerceptronViz" */;
@@ -149,6 +187,10 @@
 					A9A1A19C2C93456700000001 = {
 						CreatedOnToolsVersion = 16.0;
 					};
+					1CA0244A671A4F7EA72949C07064130A = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = A9A1A19C2C93456700000001;
+					};
 				};
 			};
 			buildConfigurationList = A9A1A1982C93456700000001 /* Build configuration list for PBXProject "PerceptronViz" */;
@@ -166,6 +208,7 @@
 			projectRoot = "";
 			targets = (
 				A9A1A19C2C93456700000001 /* PerceptronViz */,
+				1CA0244A671A4F7EA72949C07064130A /* PerceptronVizTests */,
 			);
 		};
 /* End PBXProject section */
@@ -177,6 +220,13 @@
 			files = (
 				A9A1A1A82C93456800000001 /* Preview Assets.xcassets in Resources */,
 				A9A1A1A52C93456800000001 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D5CDD3108DA3471F881DFAA9A24B36B4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,7 +255,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D3B357BB83744401B72D0C89851D2C6B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09CD7240E30E432E806B785C9B72DF78 /* PerceptronModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCBC328DA97041C79F26F211863C03F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A9A1A19C2C93456700000001 /* PerceptronViz */;
+			targetProxy = 881626B9631D4040B3926B8E2F7C393B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXContainerItemProxy section */
+		881626B9631D4040B3926B8E2F7C393B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A9A1A1952C93456700000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A9A1A19C2C93456700000001;
+			remoteInfo = PerceptronViz;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin XCBuildConfiguration section */
 		A9A1A1AA2C93456800000001 /* Debug */ = {
@@ -384,6 +460,56 @@
 			};
 			name = Release;
 		};
+		C8CB773636474037A9C9C7C2C94022C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/../Frameworks",
+					"@loader_path/../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.PerceptronVizTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PerceptronViz.app/Contents/MacOS/PerceptronViz";
+				TEST_TARGET_NAME = PerceptronViz;
+			};
+			name = Debug;
+		};
+		80F61369DEBD4FBCA0D35AD576A7D743 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/../Frameworks",
+					"@loader_path/../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.PerceptronVizTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PerceptronViz.app/Contents/MacOS/PerceptronViz";
+				TEST_TARGET_NAME = PerceptronViz;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -401,6 +527,15 @@
 			buildConfigurations = (
 				A9A1A1AD2C93456800000001 /* Debug */,
 				A9A1A1AE2C93456800000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9344C9A21694444E8D116AD799928D1A /* Build configuration list for PBXNativeTarget "PerceptronVizTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C8CB773636474037A9C9C7C2C94022C7 /* Debug */,
+				80F61369DEBD4FBCA0D35AD576A7D743 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
