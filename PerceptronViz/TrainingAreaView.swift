@@ -28,20 +28,8 @@ struct TrainingAreaView: View {
                     
                     Divider()
                     
-                    TrainingDataTableView(
-                        dataPoints: model.dataPoints,
-                        xAxisLabel: model.xAxisLabel,
-                        yAxisLabel: model.yAxisLabel,
-                        lastTrainingStep: model.trainingErrors.last,
-                        colorProvider: model.colorForClassification
-                    )
-                    .frame(width: 200)
-                    .frame(maxHeight: .infinity)
-                    
-                    Divider()
-                    
                     StepCalculationDetailsView(step: model.trainingErrors.last)
-                        .frame(width: 500)
+                        .frame(width: 520)
                         .frame(maxHeight: .infinity)
                     
                     Divider()

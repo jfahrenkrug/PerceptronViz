@@ -14,14 +14,17 @@ struct ContentView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 20) {
+            HStack(spacing: 24) {
                 TrainingDataEditorView(model: model)
-                    .frame(width: 300)
+                    .frame(width: 340)
+                    .frame(maxHeight: .infinity)
                 
                 VisualizationPanelView(model: model)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .padding()
-            .frame(minWidth: 1000, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+            .padding(.horizontal, 28)
+            .padding(.vertical, 20)
+            .frame(minWidth: 1080, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
             
             if model.showTrainingArea {
                 TrainingAreaView(model: model)
