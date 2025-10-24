@@ -36,7 +36,7 @@ struct TrainingProgressChartView: View {
                 .foregroundStyle(data.errors == 0 ? .green : .red)
                 .symbolSize(data.errors == 0 ? 80 : 60)
             }
-            .frame(minHeight: 80, maxHeight: 120)
+            .frame(minHeight: 80, maxHeight: .infinity)
             .chartXAxisLabel("Epoch")
             .chartYAxisLabel("Total Errors")
             .chartYScale(domain: .automatic(includesZero: true))

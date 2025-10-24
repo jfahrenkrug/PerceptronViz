@@ -17,43 +17,36 @@ struct TrainingAreaView: View {
         VStack(spacing: 0) {
             Divider()
             
-            VStack(spacing: 8) {
+            VStack(spacing: 12) {
                 HStack(alignment: .top, spacing: 16) {
-                    TrainingProgressChartView(
-                        epochChartData: model.epochChartData,
-                        progressText: model.epochProgressString,
-                        lastEpochErrors: model.epochErrors.last
-                    )
-                    .frame(maxWidth: .infinity)
-                    
-                    Divider()
-                    
-                    TrainingDataTableView(
-                        dataPoints: model.dataPoints,
-                        xAxisLabel: model.xAxisLabel,
-                        yAxisLabel: model.yAxisLabel,
-                        lastTrainingStep: model.trainingErrors.last,
-                        colorProvider: model.colorForClassification
-                    )
-                    .frame(width: 200)
-                    .frame(maxHeight: .infinity)
+                    VStack(spacing: 12) {
+                        TrainingProgressChartView(
+                            epochChartData: model.epochChartData,
+                            progressText: model.epochProgressString,
+                            lastEpochErrors: model.epochErrors.last
+                        )
+                        .frame(maxWidth: .infinity)
+                        .frame(maxHeight: .infinity, alignment: .top)
+                        .layoutPriority(1)
+                        
+                        Divider()
+                        
+                        TrainingControlsPanel(model: model)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     
                     Divider()
                     
                     StepCalculationDetailsView(step: model.trainingErrors.last)
-                        .frame(width: 500)
+                        .frame(width: 520)
                         .frame(maxHeight: .infinity)
-                    
-                    Divider()
-                    
-                    TrainingControlsPanel(model: model)
-                        .frame(width: 250)
                 }
                 .padding(.horizontal)
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, 12)
         }
-        .frame(maxWidth: .infinity, maxHeight: 300)
+        .frame(maxWidth: .infinity, maxHeight: 340)
         .background(Color.gray.opacity(0.05))
     }
 }

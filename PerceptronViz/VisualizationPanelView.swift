@@ -14,10 +14,7 @@ struct VisualizationPanelView: View {
     @Bindable var model: PerceptronModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Perceptron Visualization")
-                .font(.headline)
-            
+        VStack(alignment: .leading, spacing: 12) {
             PerceptronChartView(model: model)
             
             ClassificationLegendView(model: model)
