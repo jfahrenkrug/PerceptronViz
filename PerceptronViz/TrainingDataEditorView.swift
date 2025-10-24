@@ -47,6 +47,7 @@ struct TrainingDataEditorView: View {
                 Spacer()
 
                 Button("Edit") {
+                    csvDraft = model.csvText
                     isEditingCSV = true
                 }
                 .buttonStyle(.bordered)
@@ -55,10 +56,6 @@ struct TrainingDataEditorView: View {
         }
         .sheet(isPresented: $isEditingCSV) {
             csvEditorSheet
-        }
-        .onChange(of: isEditingCSV) { newValue in
-            guard newValue else { return }
-            csvDraft = model.csvText
         }
         .onChange(of: model.csvText) { newValue in
             guard !isEditingCSV else { return }
