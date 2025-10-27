@@ -98,6 +98,11 @@ class PerceptronModel {
             description: "Classic OR gate logic"
         ),
         Dataset(
+            name: "XOR Gate",
+            csvData: "Input1,Input2,Classification,Label\n0,0,-1,False\n0,1,1,True\n1,0,1,True\n1,1,-1,False",
+            description: "Classic XOR gate logic (not linearly separable)"
+        ),
+        Dataset(
             name: "Iris Flowers",
             csvData: "Sepal Length,Sepal Width,Classification,Species\n5.1,3.5,-1,Setosa\n4.9,3.0,-1,Setosa\n4.7,3.2,-1,Setosa\n4.6,3.1,-1,Setosa\n5.0,3.6,-1,Setosa\n5.4,3.9,-1,Setosa\n4.6,3.4,-1,Setosa\n5.0,3.4,-1,Setosa\n4.4,2.9,-1,Setosa\n4.9,3.1,-1,Setosa\n7.0,3.2,1,Versicolor\n6.4,3.2,1,Versicolor\n6.9,3.1,1,Versicolor\n5.5,2.3,1,Versicolor\n6.5,2.8,1,Versicolor\n5.7,2.8,1,Versicolor\n6.3,3.3,1,Versicolor\n4.9,2.4,1,Versicolor\n6.6,2.9,1,Versicolor\n5.2,2.7,1,Versicolor",
             description: "Setosa vs Versicolor iris flowers (sepal dimensions)"
